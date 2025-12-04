@@ -1,10 +1,4 @@
 $main_background_alternative: radial-gradient(circle at 0% 0%, #5B483A 0%, #262425ad 100%) #583b26;
 $main_background: radial-gradient(100% 240% at 0% 0%, #b4bcc2 0%, #b4bcc2 100%) rgb(91 135 95 / 65%);
-$restaurant_background: url(../images/background/background.jpg); 
-$restaurant_background_alternative: url(../images/background_main.jpg); 
-
-@font-face {
-  font-family: 'smooche-fonts';
-  src: url("/fonts/smooch-regular-webfont.woff") format("woff"),
-    url("/fonts/smooch-regular-webfont.woff2") format("woff2");
-}
+$restaurant_background: url(../images/background/background.jpg);
+$restaurant_background_alternative: url(../images/background_main.jpg);

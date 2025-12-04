@@ -1,12 +1,4 @@
 @charset "UTF-8";
-@font-face {
-  font-family: "smooche-fonts";
-  src: url("/fonts/smooch-regular-webfont.woff") format("woff"), url("/fonts/smooch-regular-webfont.woff2") format("woff2");
-}
-@font-face {
-  font-family: "smooche-fonts";
-  src: url("/fonts/smooch-regular-webfont.woff") format("woff"), url("/fonts/smooch-regular-webfont.woff2") format("woff2");
-}
 .chatlog .all-browser {
   margin: 0;
   padding: 5;
@@ -25,7 +17,7 @@
   border-radius: 0 30px 10px 5px;
   margin: 0 10px 0 0;
   padding: 5px 15px 1px 5px;
-  background: radial-gradient(circle at 0% 0%, #5B483A 0%, rgba(38, 36, 37, 0.6784313725) 100%) #583A26;
+  background: radial-gradient(circle at 0% 0%, #5b483a 0%, rgba(38, 36, 37, 0.6784313725) 100%) #583a26;
 }
 .chatlog .browser .message-field {
   background-color: #ee432e;
@@ -34,7 +26,7 @@
   background-image: -webkit-linear-gradient(top, #ee432e 0%, #c63929 50%, #b51700 50%, #891100 100%);
   box-shadow: inset 0px 0px 0px 1px rgba(255, 115, 100, 0.4), 0 1px 3px #333333;
   -webkit-text-decoration: none ", " color ": " #fff ", " textShadow ": " 0px -1px 1px rgba(0, 0, 0, 0.8);
-          text-decoration: none ", " color ": " #fff ", " textShadow ": " 0px -1px 1px rgba(0, 0, 0, 0.8);
+  text-decoration: none ", " color ": " #fff ", " textShadow ": " 0px -1px 1px rgba(0, 0, 0, 0.8);
   font: bold 15px/1 "helvetica neue", helvetica, arial, sans-serif;
   display: flex;
   flex: 2;
@@ -81,9 +73,9 @@
   -ms-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.65);
   -o-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.65);
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.65);
-  background: #F3F2EA;
-  background: -moz-linear-gradient(top, #F3F2EA 0%, #A39F5F 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #F3F2EA), color-stop(100%, #A39F5F));
+  background: #f3f2ea;
+  background: -moz-linear-gradient(top, #f3f2ea 0%, #a39f5f 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f2ea), color-stop(100%, #a39f5f));
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#F3F2EA", endColorstr="#A39F5F", GradientType=0);
 }
 .user-name-chat-bot .chatbot-btn:active {
@@ -91,9 +83,9 @@
   -ms-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.65);
   -o-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.65);
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.65);
-  background: #F3F2EA;
-  background: -moz-linear-gradient(top, #A39F5F 0%, #F3F2EA 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #A39F5F), color-stop(100%, #F3F2EA));
+  background: #f3f2ea;
+  background: -moz-linear-gradient(top, #a39f5f 0%, #f3f2ea 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #a39f5f), color-stop(100%, #f3f2ea));
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#A39F5F", endColorstr="#F3F2EA", GradientType=0);
 }
 .user-name-chat-bot .chatbot-btn:focus,
@@ -172,7 +164,7 @@
 .wrapper_modal .inventory th {
   padding: 5px 5px 3px 15px;
   font-size: 1.2em;
-  border: 1px solid #DDB575;
+  border: 1px solid #ddb575;
 }
 .wrapper_modal .inventory th {
   text-transform: uppercase;
@@ -193,10 +185,10 @@
 }
 .wrapper_modal .inventory tr:hover {
   font-weight: bold;
-  border-bottom: 2px solid #F60;
-  color: #FFF;
-  background-color: #6E97BF;
-  border-bottom-color: #6E97BF;
+  border-bottom: 2px solid #f60;
+  color: #fff;
+  background-color: #6e97bf;
+  border-bottom-color: #6e97bf;
 }
 .wrapper_modal .section_boxes {
   display: flex;
@@ -205,7 +197,7 @@
   align-content: space-around;
   align-items: stretch;
   gap: initial;
-  color: #6E97BF;
+  color: #6e97bf;
 }
 .wrapper_modal .section_boxes .modal-product-card__image-block {
   flex: 1 100px;
@@ -244,7 +236,8 @@
   flex-flow: row nowrap;
   align-items: center;
 }
-.keybord .keysRow .btnKey, .keybord .keysRow select[name=lang] {
+.keybord .keysRow .btnKey,
+.keybord .keysRow select[name="lang"] {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -259,7 +252,8 @@
   border-radius: 5px;
   box-shadow: 0 0 2px white;
 }
-.keybord .keysRow .btnKey b, .keybord .keysRow select[name=lang] b {
+.keybord .keysRow .btnKey b,
+.keybord .keysRow select[name="lang"] b {
   font-size: 0.7em;
 }
 
@@ -427,4 +421,4 @@ body .menu_nav_header a :hover {
   .BasketSale_main {
     width: 32%;
   }
-}/*# sourceMappingURL=style.css.map */
+} /*# sourceMappingURL=style.css.map */

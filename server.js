@@ -63,7 +63,7 @@ const replaceRushienLetter = (arg) =>
 //*********************todo перезаписали в папку dist файлы с папок audio, image, css, audio**************************
 const fs_promise = fs.promises;
 
-const outputDir = ["images"];
+const outputDir = [];
 console.clear();
 
 (function () {
