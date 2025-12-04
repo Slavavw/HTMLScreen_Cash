@@ -1,0 +1,20 @@
+{
+  "name": "htmlscreen",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Slavavw/HTMLScreen_Cash.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Slavavw/HTMLScreen_Cash/issues"
+  },
+  "homepage": "https://github.com/Slavavw/HTMLScreen_Cash#readme",
+  "description": ""
+}
