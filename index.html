@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>PositiveCheck</title> 
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/bootstrap.css">  
+  
+  <!--
+    <script src="/jquery-ui-1.12.1/jquery-ui.js"></script>
+  -->
+
+  <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/themes/sunny/jquery-ui.css">
+  <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet"
+    type="text/css" />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  
+  <!--
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>  
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/jquery-ui.min.js"></script>  
+  -->
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="dist/app.js" defer></script>
+  <style type="text/css">
+    #map {
+      height: 500px;
+      width: 500px;
+      border: 1px solid #0000;
+    }
+  </style>
+  <script>
+    function playPause(element) {
+      let myAudio = document.getElementsByTagName("audio")[0];
+      myAudio.paused ? myAudio.play() : myAudio.pause();
+    }
+  </script>
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="content"></div>
+  <div id="dialogWnd_generate" title=""></div>   
+</body>
+</html>

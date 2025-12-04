@@ -1,0 +1,152 @@
+.seach_folder input {
+  background-color: #ee432e;
+  background-image: linear-gradient(top, #ee432e 0%, #c63929 50%, #b51700 50%, #891100 100%);
+  border: 1px solid #951100;
+  border-radius: 5px;
+  box-shadow: inset 0px 0px 0px 1px rgba(255, 115, 100, 0.4), 0 1px 3px #333333;
+  padding: 12px 20px 14px 20px;
+  text-decoration: none;
+  color: #fff;
+  font: bold 20px/1 "helvetica neue", helvetica, arial, sans-serif;
+  text-align: left;
+  text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.8);
+  width: 680px;
+  height: 40px;
+  margin: 10px 20px;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.keybord {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+.keybord .keysRow {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+.keybord .keysRow .btnKey, .keybord .keysRow select[name=lang] {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 40px;
+  padding: 2px;
+  font-size: 1em;
+  color: black;
+  background: rgb(0, 102, 153);
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 2px white;
+}
+.keybord .keysRow .btnKey b, .keybord .keysRow select[name=lang] b {
+  font-size: 0.7em;
+}
+
+/*
+body { max-width: 700px;
+    background-color: rgba(0,51,102,.8);
+	color: rgb(255,255,255);
+    div {
+        margin: 10px $margin_left;
+        display: flex; flex-flow: column nowrap; gap: 10px; 
+        border: 1px solid darkgrey; 
+        width: $width_keyboard;
+        height: $height_keyboard;
+        nav{
+            display:  flex; flex-flow: row nowrap;
+            gap: 5px; 
+            justify-content: space-around; align-items: center;
+        };
+    };
+    .seach_folder textarea{
+        width: $width_keyboard;
+        height: $height_texarea;
+        margin: 10px $margin_left;
+        display: flex; flex-flow: row nowrap;    
+        border: 1px dotted #cccccc;
+        color: red;
+        font-size: 1.8em;
+    };
+    select{
+        height: $height_key;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: red;
+        border-radius: 5px;
+        box-shadow: 0 0 2px white;
+    };
+    input [type="radio"]:checked {
+        visibility: inherit;
+        color: #38da38;
+    };
+};
+
+button{
+    display: flex; flex-flow: row nowrap; align-items: center;
+    justify-content: center; gap: 2px;
+    width: $width_key; height: $height_key;
+    padding: 2px;
+    font-size: 1em;
+	color: black;
+	background: rgb(0,102,153);
+	background: linear-gradient(to bottom, rgba(255,255,255,.1) 40%,rgba(255,255,255,.5));
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0 0 2px white;
+    b{
+        font-size: .7em; 
+    } ;
+    transition-property: box-shadow, background, transform;
+    transition-timing-function: ease-in-out;
+    transition-duration: .5s;    
+};
+
+article {
+    display: flex; flex-flow: row nowrap;
+    width: $width_keyboard; gap: $width_key;
+    margin-left: $margin_left;
+    .init {
+        width: 100px; 
+    };
+};
+
+.focus {
+    background: linear-gradient(to bottom, rgba(0,102,153,.5) 40%,rgba(255,255,255,.5));
+    box-shadow: inset 4px 4px rgba(10,10,10,.1);
+    transform: scale(1.5);
+};
+h2,p{
+    margin: 15px 25px;
+};
+footer{
+    color: #0c066c; height: 250px;
+    text-shadow: 1px -1px 1px #65747e;
+    display: inline-flexbox;
+    position: static; 
+    background: rgb(0,102,153);
+	background: linear-gradient(to bottom, rgba(255,255,255,.1) 40%,rgba(255,255,255,.5)) ;    
+    margin-left: $margin_left;
+    ul {        
+        li {
+            list-style: none;	   
+	        background-image: url(./images/bullet.png);
+	        background-repeat: no-repeat;
+	        padding-left: 30px;	   
+	        margin-bottom: 10px;	   
+	        background-position: 10px 4px;
+	        margin-left: 35px; margin-right: 60px;   	   
+                a{ text-decoration: none;
+                    color: #0c066c;
+                    :link{color: #0c066c;};
+                    :visited{color: #0c066c;};
+                    :hover {color: #0c066c;text-shadow: 1px -1px 1px #65747e;
+                }
+            }
+        }
+    }
+}
+    *//*# sourceMappingURL=keys.css.map */

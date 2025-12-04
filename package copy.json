@@ -1,6 +1,7 @@
 {
-  "name": "htmlscreen",
+  "name": "aoutucompete_serverexpress_reduxer",
   "version": "1.0.0",
+  "description": "babel-register Позволяет импортировать и транспилировать JSX на стороне сервера",
   "main": "index.js",
   "scripts": {    
     "start": "concurrently \"set NODE_ENV=development&&webpack --watch \" \"nodemon server \"",
@@ -9,6 +10,8 @@
     "server": "nodemon server",
     "build": "concurrently \"set NODE_ENV=development&&webpack\" \"nodemon server\""    
   },
+  "author": "SlavaVW",
+  "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-env": "^7.19.4",
@@ -43,14 +46,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Slavavw/HTMLScreen_Cash.git"
+    "url": "git+https://github.com/Slavavw/PositiveCheck_HTML.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Slavavw/HTMLScreen_Cash/issues"
+    "url": "https://github.com/Slavavw/PositiveCheck_HTML/issues"
   },
-  "homepage": "https://github.com/Slavavw/HTMLScreen_Cash#readme",
-  "description": ""
+  "homepage": "https://github.com/Slavavw/PositiveCheck_HTML#readme"
 }

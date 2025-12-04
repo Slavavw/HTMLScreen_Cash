@@ -1,0 +1,67 @@
+.wrapper_modal {
+  background: linear-gradient(to bottom, #ecf0f1 40%, rgba(255, 255, 255, 0.5));
+}
+.wrapper_modal .inventory {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  margin-top: 25px;
+  border-collapse: collapse;
+  display: flex;
+  flex-flow: column;
+}
+.wrapper_modal .inventory caption {
+  padding-top: 9px;
+  padding-bottom: 8px;
+  color: #165381;
+  text-align: center;
+  font-style: inherit;
+}
+.wrapper_modal .inventory col {
+  background: blanchedalmond;
+  text-align: left;
+}
+.wrapper_modal .inventory td,
+.wrapper_modal .inventory th {
+  padding: 5px 5px 3px 15px;
+  font-size: 1.2em;
+  border: 1px solid #DDB575;
+}
+.wrapper_modal .inventory th {
+  text-transform: uppercase;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 4px;
+  background: rgb(229, 76, 16);
+  background: linear-gradient(to bottom, rgb(229, 76, 16), rgb(173, 54, 8));
+  color: white;
+}
+.wrapper_modal .inventory tr:nth-of-type(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(89, 102, 66);
+}
+.wrapper_modal .inventory tr:nth-of-type(odd) {
+  background-color: rgba(229, 76, 16, 0.1);
+  color: rgb(57, 28, 223);
+}
+.wrapper_modal .inventory tr:hover {
+  font-weight: bold;
+  border-bottom: 2px solid #F60;
+  color: #FFF;
+  background-color: #6E97BF;
+  border-bottom-color: #6E97BF;
+}
+.wrapper_modal .section_boxes {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-content: space-around;
+  align-items: stretch;
+  gap: initial;
+  color: #6E97BF;
+}
+.wrapper_modal .section_boxes .modal-product-card__image-block {
+  flex: 1 100px;
+}
+.wrapper_modal .section_boxes .group-item__image-container_describe {
+  flex: 2 250px;
+  padding: 5px;
+}/*# sourceMappingURL=tablestyle.css.map */
