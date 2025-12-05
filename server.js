@@ -9,7 +9,7 @@ require("@babel/register")({ presets: ["@babel/env", "@babel/react"] });
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 
-const { IntervalServer, ServerPort } = require(path.join(__dirname, "serverinterval.json"));
+let { IntervalServer, ServerPort } = require(path.join(__dirname, "serverinterval.json"));
 
 const replaceReservedSymbol = (str) => {
   let regEx = /(?<space>[%\s])|(?<amp>&)|(?<lt><)|(?<gt>>)|(?<apos>')|(?<quote>")/g;
@@ -66,10 +66,6 @@ const fs_promise = fs.promises;
 const outputDir = [];
 console.clear();
 
-(function () {
-  Promise.race(outputDir.map((e) => start(path.join(__dirname, e), path.join(__dirname, "dist", e))));
-})();
-
 async function start(direct, directOutput) {
   try {
     await fs.exists(directOutput, async (exit) => {
@@ -87,6 +83,40 @@ async function start(direct, directOutput) {
     console.log(e);
   }
 }
+
+const os = require("os");
+const IPv4 =
+  Object.entries(os.networkInterfaces())
+    .flat(5)
+    .filter((e) => e instanceof Object)
+    .filter((e) => e.family.match(/^ipv4/i) && !e.internal)
+    .map((e) => e.address)[0] || "localhost";
+
+console.log(IPv4);
+
+let server = new http.Server();
+
+async function StartBAT() {
+  stat(path.join(__dirname, "source", "options.json"))
+    .then(() => {
+      ServerPort = require(path.join(__dirname, "source", "options.json")).ServerPort;
+    })
+    .catch(() => {
+      ServerPort = 50001;
+    })
+    .finally(() => {
+      server.listen(ServerPort, IPv4, async () => {
+        console.log(`Сервер запущен по адреcу: http://${IPv4}:${ServerPort}`.bgBrightGreen);
+      });
+    });
+}
+
+(function () {
+  Promise.race(
+    outputDir.map((e) => start(path.join(__dirname, e), path.join(__dirname, "dist", e))),
+    StartBAT()
+  );
+})();
 
 async function reamovecatalog(dir) {
   try {
@@ -152,22 +182,6 @@ const ErrorBundle = function (message) {
   );
 };
 
-const PORT = ServerPort || 5000;
-const os = require("os");
-const IPv4 =
-  Object.entries(os.networkInterfaces())
-    .flat(5)
-    .filter((e) => e instanceof Object)
-    .filter((e) => e.family.match(/^ipv4/i) && !e.internal)
-    .map((e) => e.address)[0] || "localhost";
-
-console.log(IPv4);
-
-//const menu_titles = require("./menu_titles.json");
-
-let server = new http.Server();
-server.listen(PORT, IPv4, () => console.log(`Сервер запущен по адреcу: http://${IPv4}:${PORT}`.bgBrightGreen));
-
 async function CreateOrderFolder(folder) {
   try {
     await fs.exists(folder, async (exit) => {
@@ -186,8 +200,7 @@ async function CreateOrderFolder(folder) {
 
 server.on("request", (request, response) => {
   let pathname = url.parse(request.url).pathname;
-  const menu_titles = require("./menu_titles.json");
-  let menu = require("./menu.json");
+  let menu = require(path.join(__dirname, "source", "menu.json"));
   if (request.method === "GET") {
     let filePath = path.join(__dirname, compose(request.url)(replaceRushienLetter, replaceReservedSymbol));
     if (pathname === "/") {
@@ -235,30 +248,11 @@ server.on("request", (request, response) => {
                 interval = 5000;
               })
               .finally(() => {
-                let funcInterval = `<script>
-                  const updateSheet = (function () {
-                  console.log(${interval});
-                  let count = 0;
-                  return () => {
-                    if (document.querySelector(".intervel_link".concat(count))) {
-                      document.querySelector(".intervel_link".concat(count)).click();
-                      console.log(count,${menu_titles.length});
-                      count++;
-                      if (count > ${menu_titles.length}-1) count = 0;
-                    }
-                  };
-                })();
-                window.setInterval(updateSheet, ${interval});
-                </script>`;
-
                 let result = Buffer.from(dataBuffer)
                   .toString()
                   .replace(
                     /<body>/i,
-                    `<body>`
-                      .concat(styleBkground)
-                      .concat(`<script>const menu_titles = ${JSON.stringify(menu_titles)};</script>`)
-                      .concat(funcInterval)
+                    `<body>`.concat(styleBkground).concat(`<script> const interval = ${interval};</script>`)
                   );
                 console.log(result.bgMagenta);
                 response.write(result);
@@ -266,15 +260,6 @@ server.on("request", (request, response) => {
               });
           });
       });
-    } else if (pathname === "/menu_titles") {
-      response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(menu_titles));
-    } else if (/menu\/[0-9]+/.test(pathname)) {
-      let id = /[0-9]+/.exec(pathname)[0];
-      let arr = menu[id][`${menu_titles[id].title}`];
-      console.log("id = ", id);
-      console.log(JSON.stringify(arr).bgCyan);
-      response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(arr));
-      JSON.stringify(arr);
     } else if (pathname === "/animation_img/library") {
       let pathLibreryPict = path.join(__dirname, "dist", "images", "library");
       let res = [];
@@ -287,6 +272,39 @@ server.on("request", (request, response) => {
         response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify(res));
       });
+    } else if (pathname === "/pre_order") {
+      fs.stat(path.join(__dirname, "source", "pre_order", "pre_order.json"), (err, stats) => {
+        if (err) {
+          response.writeHead(404, { "content-type": "application/text; chatset=utf-8" });
+          response.end(err.message);
+        } else {
+          console.log("size".bgYellow, stats.size);
+          if (stats.size) {
+            let readStream = fs.createReadStream(
+              path.join(__dirname, "source", "pre_order", "pre_order.json"),
+              "utf-8"
+            );
+            response.writeHead(200, {
+              "content-type": mime.getType(path.basename(filePath)),
+            });
+            readStream.on("data", (chunk) => {
+              response.write(chunk);
+            });
+            readStream.on("end", () => response.end());
+          } else {
+            response.writeHead(200, {
+              "content-type": mime.getType(path.basename(filePath)),
+            });
+
+            response.end(JSON.stringify({}));
+          }
+        }
+      });
+    } else if (/\/get_structure/.test(pathname)) {
+      console.log("СУКААААААААААА".rainbow);
+      let arr = Object.values(menu[0])[0];
+      console.log(arr);
+      response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(arr));
     } else {
       console.log(filePath.red);
       fs.exists(filePath, (ext) => {

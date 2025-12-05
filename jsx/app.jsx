@@ -1,10 +1,14 @@
 const React = require("react");
 const ReactDOM = require("react-dom");
 import "/css/style.css";
-const { Router, Route, Link, IndexRoute, browserHistory } = require("react-router");
-const { FcFinePrint } = require("react-icons/fc");
-const Menu = require("./Menu.jsx");
+const { Router, Route, browserHistory } = require("react-router");
+const { Checkout } = require("./checkout.jsx");
+const ErrorBundle = require("./errorBundle.jsx");
+const AnimationCircle = require("./animationCircle.jsx");
 
+let cartItems = {};
+
+// Описание структуры колонок даннных (имя, видимость)
 // Описание структуры колонок даннных (имя, видимость)
 const ColumnStruct = (function () {
   let columnToResult,
@@ -44,59 +48,97 @@ const ColumnStruct = (function () {
           }
           return true;
         });
+      case "get_structure": {
+        return async function () {
+          let url;
+          url = location.origin + "/get_structure";
+          try {
+            let data = await fetch(url);
+            data = await data.json();
+            if (data.length) {
+              ColumnStruct("clear");
+              let o = Array.from(Object.entries(Array.of(Object.entries(data)).flat()[0][1])).flat()[1][0];
+              for (let [k, v] of Object.entries(o)) {
+                let obj = {};
+                obj[`${k}`] = v;
+                ColumnStruct("add", obj);
+              }
+            }
+            return ColumnStruct("get");
+          } catch (e) {
+            return ColumnStruct("clear");
+          }
+        };
+      }
     }
   };
 })();
+
+async function getPreOrder() {
+  let url = new URL(`${location.origin}/pre_order`);
+  try {
+    let response = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log(response.ok);
+    if (!response.ok) {
+      cartItems = Object.assign({});
+      return cartItems;
+    } else {
+      let data = await response.json();
+      console.log("data", typeof data, data);
+      if (Object.keys(data).length) {
+        cartItems = Object.assign(data);
+      } else cartItems = Object.assign({});
+      return cartItems;
+    }
+  } catch (e) {
+    return {};
+  }
+}
 
 // главный компонент, потому что он является точкой входа для Webpack
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      PRODUCT: [],
-    };
+    this.state = { columnName: null };
+    this.initStructureColumn = this.initStructureColumn.bind(this);
   }
 
-  componentWillMount() {
-    fetch(`${location.origin}/menu_titles`)
-      .then((response) => response.json())
-      .then((data) => this.setState({ PRODUCT: [...data] }));
+  async initStructureColumn() {
+    let columnName = await ColumnStruct("get_structure");
+    columnName = await columnName();
+    columnName = ColumnStruct("getVisible", ColumnStruct("exclude column", "Описание"));
+    this.setState({ columnName });
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.isModal && newProps.location.key !== this.props.location.key) {
-      this.previousChildren = this.props.children;
-    }
+  componentDidMount() {
+    this.initStructureColumn();
   }
+
   render() {
-    let { PRODUCT } = this.state;
-    return (
+    let { columnName } = this.state;
+    return columnName ? (
       <div className='well'>
-        <div className='menu_nav_header'>
-          {PRODUCT.map((picture, index) => (
-            <Link
-              className={`intervel_link${picture.id}`}
-              key={picture.id}
-              to={{
-                pathname: `/menu/${picture.id}`,
-                state: { returnTo: `/` },
-              }}>
-              {picture.src === null ? (
-                <div className='btn btn-primary'>
-                  <p>{picture.title}</p>
-                </div>
-              ) : (
-                <img
-                  src={picture.src}
-                  height='100'
-                  style={{ margin: 10 }}
-                />
-              )}
-            </Link>
-          ))}
-        </div>
-        <div>{this.props.children}</div>
+        <Checkout
+          cartItems={getPreOrder}
+          columnName={columnName}
+          interval={interval}
+        />
       </div>
+    ) : (
+      <ErrorBundle
+        width={200}
+        height={100}
+        message={this.state.error}>
+        <AnimationCircle
+          width={500}
+          height={100}
+          style={{ position: "absolute", left: 50, zIndex: "-10000" }}
+          speed={1000 / 24}
+        />
+      </ErrorBundle>
     );
   }
 }
@@ -105,14 +147,7 @@ ReactDOM.render(
   <Router history={browserHistory}>
     <Route
       path='/'
-      component={App}>
-      <Route
-        path='/menu/:id'
-        component={Menu}
-        product={menu_titles}
-        ColumnStruct={ColumnStruct}
-      />
-    </Route>
+      component={App}></Route>
   </Router>,
   document.getElementById("content")
 );
