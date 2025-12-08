@@ -1,6 +1,5 @@
 const React = require("react");
 const { getBYN, convertToNumeric } = require("../js/formatFunction.js");
-const findDOMNode = require("react-dom").findDOMNode;
 const ErrorBundle = require("./errorBundle.jsx");
 const AnimationCircle = require("./animationCircle.jsx");
 
@@ -33,7 +32,7 @@ class Checkout extends React.Component {
   }
 
   createTotalColumn(key, value) {
-    this.TotalColumn[key] = value + (this.TotalColumn[key] === undefined ? 0 : this.TotalColumn[key]);
+    this.TotalColumn[key] = value * 1 + (this.TotalColumn[key] === undefined ? 0 : this.TotalColumn[key]) * 1;
   }
 
   componentWillUnmount() {
@@ -49,65 +48,76 @@ class Checkout extends React.Component {
     let { columnName } = this.props.route || this.props;
     if (this.state.error === "") {
       this.TotalColumn = Object.assign({});
-      return (
-        <div>
-          <h1>Счёт</h1>
-          <table
-            className='table table-bordered'
-            ref={"table table-bordered"}
-            style={{ background: "rgba(125,125,125,.8)" }}>
-            <colgroup>
-              {columnName.map((title, i) => {
-                if (/\.?изделие|продукт\.?|\.?цена|стоимость|сумма\.?/is.exec(title) !== null)
-                  return (
-                    <col
-                      id={title}
-                      key={i}
-                    />
-                  );
-                else return null;
-              })}
-              <col
-                id='количество'
-                key={columnName.length + 100}
-              />
-            </colgroup>
-            <tbody>
-              <tr>
-                {columnName.map((title, i) => (
+      if (cartItems.length) {
+        return (
+          <div>
+            <table
+              className='table table-bordered'
+              ref={"table table-bordered"}
+              style={{ background: "rgba(125,125,125,.8)" }}>
+              <colgroup>
+                {columnName.map((title, i) => {
+                  if (/\.?изделие|продукт\.?|\.?цена|стоимость|сумма\.?/is.exec(title) !== null)
+                    return (
+                      <col
+                        id={title}
+                        key={i}
+                      />
+                    );
+                  else if (/PHOTO|src/i.exec(title))
+                    return (
+                      <col
+                        id={title}
+                        key={i}
+                      />
+                    );
+                  else return null;
+                })}
+                <col
+                  id='количество'
+                  key={columnName.length + 100}
+                />
+              </colgroup>
+              <tbody>
+                <tr>
+                  {columnName.map((title, i) => {
+                    title = /PHOTO|src/i.exec(title) ? "" : title;
+                    return (
+                      <th
+                        scope='col'
+                        key={i}>
+                        {title}
+                      </th>
+                    );
+                  })}
                   <th
                     scope='col'
-                    key={i}>
-                    {title}
+                    key={columnName.length + 100}>
+                    количество
                   </th>
-                ))}
-                <th
-                  scope='col'
-                  key={columnName.length + 100}>
-                  количество
-                </th>
-              </tr>
-              {cartItems.map((item, index) => {
-                let { dataRow, count } = item;
-                return (
-                  <tr key={index}>
-                    {columnName.map((title, i) => (
-                      <TTD
-                        key={i}
-                        title={title}
-                        dataRow={dataRow}
-                        count={count}
-                        createTotalColumn={this.createTotalColumn}></TTD>
-                    ))}
-                    <td>{count}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <TBasketSale_itogo TotalColumn={this.TotalColumn}></TBasketSale_itogo>
-        </div>
-      );
+                </tr>
+                {cartItems.map((item, index) => {
+                  let { dataRow, count } = item;
+                  return (
+                    <tr key={index}>
+                      {columnName.map((title, i) => (
+                        <TTD
+                          key={i}
+                          title={title}
+                          dataRow={dataRow}
+                          count={count}
+                          createTotalColumn={this.createTotalColumn}></TTD>
+                      ))}
+                      <td>{count}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <TBasketSale_itogo TotalColumn={this.TotalColumn}></TBasketSale_itogo>
+          </div>
+        );
+      } else return null;
     } else {
       return (
         <ErrorBundle
@@ -129,17 +139,29 @@ class Checkout extends React.Component {
 class TTD extends React.Component {
   constructor(props) {
     super(props);
-    this.message = "";
   }
 
   render() {
     let { dataRow, count, title, createTotalColumn } = this.props;
+    let data = dataRow[title];
     if (Object.hasOwn(dataRow, title)) {
-      if (/\.?цена|стоимость|сумма\.?/is.exec(title) !== null) {
-        createTotalColumn(`Итого стоимость`, convertToNumeric(dataRow[`${title}`]) * count);
+      if (/сумма со скидкой/is.exec(title) !== null) {
+        createTotalColumn(`Итого по чеку `, convertToNumeric(dataRow[`${title}`]));
       }
-      this.message = dataRow[`${title}`];
-      return <td ref='parent'>{dataRow[`${title}`]}</td>;
+      if (/PHOTO|src/i.test(title))
+        return (
+          <td ref='parent'>
+            <div
+              style={{
+                backgroundImage: `url(${data})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "contain",
+                width: "50px",
+                height: "50px",
+              }}></div>
+          </td>
+        );
+      else return <td ref='parent'>{dataRow[`${title}`]}</td>;
     } else return null;
   }
 }

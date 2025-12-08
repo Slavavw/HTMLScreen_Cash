@@ -5,7 +5,6 @@ const { Router, Route, browserHistory } = require("react-router");
 const { Checkout } = require("./checkout.jsx");
 const ErrorBundle = require("./errorBundle.jsx");
 const AnimationCircle = require("./animationCircle.jsx");
-const CBasketSale = require("./CBasketSale.jsx");
 
 let cartItems = {};
 
@@ -134,12 +133,6 @@ class App extends React.Component {
           ColumnStruct={ColumnStruct}
           handleUpdate={this.handleUpdate}
         />
-        {Object.keys(cartItems).length ? (
-          <CBasketSale
-            ColumnStruct={ColumnStruct}
-            cartItems={cartItems}
-          />
-        ) : null}
       </div>
     ) : (
       <ErrorBundle
