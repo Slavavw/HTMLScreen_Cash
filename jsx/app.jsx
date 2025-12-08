@@ -5,6 +5,7 @@ const { Router, Route, browserHistory } = require("react-router");
 const { Checkout } = require("./checkout.jsx");
 const ErrorBundle = require("./errorBundle.jsx");
 const AnimationCircle = require("./animationCircle.jsx");
+const CBasketSale = require("./CBasketSale.jsx");
 
 let cartItems = {};
 
@@ -102,8 +103,9 @@ async function getPreOrder() {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { columnName: null };
+    this.state = { columnName: null, updateParent: false };
     this.initStructureColumn = this.initStructureColumn.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   async initStructureColumn() {
@@ -117,6 +119,10 @@ class App extends React.Component {
     this.initStructureColumn();
   }
 
+  handleUpdate() {
+    this.setState({ updateParent: !this.state.updateParent });
+  }
+
   render() {
     let { columnName } = this.state;
     return columnName ? (
@@ -125,7 +131,15 @@ class App extends React.Component {
           cartItems={getPreOrder}
           columnName={columnName}
           interval={interval}
+          ColumnStruct={ColumnStruct}
+          handleUpdate={this.handleUpdate}
         />
+        {Object.keys(cartItems).length ? (
+          <CBasketSale
+            ColumnStruct={ColumnStruct}
+            cartItems={cartItems}
+          />
+        ) : null}
       </div>
     ) : (
       <ErrorBundle

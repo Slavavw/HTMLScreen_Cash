@@ -22,9 +22,9 @@ class Checkout extends React.Component {
   }
 
   async senderRequest() {
-    let { cartItems } = this.props.route || this.props;
+    let { cartItems, handleUpdate } = this.props.route || this.props;
     let newCartItems = await cartItems();
-    this.setState({ cartItems: newCartItems });
+    this.setState({ cartItems: newCartItems }, () => handleUpdate());
   }
 
   componentDidMount() {

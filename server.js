@@ -107,6 +107,11 @@ async function StartBAT() {
     .finally(() => {
       server.listen(ServerPort, IPv4, async () => {
         console.log(`Сервер запущен по адреcу: http://${IPv4}:${ServerPort}`.bgBrightGreen);
+        fs.writeFile(
+          path.join(__dirname, "start.bat"),
+          `start "C:Program FilesGoogleChromeApplicationchrome.exe" "http://${IPv4}:${ServerPort}"`,
+          cb
+        );
       });
     });
 }
@@ -161,7 +166,8 @@ async function readFileInDir(directSource, directOutput) {
 //todo подключаем компиляцию на ходу из JSX в JS React
 //todo для импортирования JSX после установки babel-register и babel-preset-react из npm:
 const cb = (err) => {
-  throw err;
+  console.log(err);
+  return err;
 };
 
 //создали для рендеринга на стороне сервера React element
@@ -301,7 +307,6 @@ server.on("request", (request, response) => {
         }
       });
     } else if (/\/get_structure/.test(pathname)) {
-      console.log("СУКААААААААААА".rainbow);
       let arr = Object.values(menu[0])[0];
       console.log(arr);
       response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(arr));

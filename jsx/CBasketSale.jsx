@@ -1,5 +1,4 @@
 const React = require("react");
-const CchooseNumberPosition = require("./CchooseNumberPosition.jsx");
 const { Link } = require("react-router");
 const { TBasketSale_itogo } = require("./checkout.jsx");
 const { getBYN, convertToNumeric } = require("../js/formatFunction.js");
@@ -27,7 +26,7 @@ class CBasketSale extends React.Component {
     //   this.TotalColumn[key] = value;
   }
   render() {
-    let { addToCart, handleForceUpdate, ColumnStruct } = this.props;
+    let { ColumnStruct } = this.props;
     let cartItems = Array.from(Object.entries(this.props.cartItems))
       .flat()
       .filter((el, index) => index % 2 !== 0);
@@ -49,8 +48,6 @@ class CBasketSale extends React.Component {
               key={index}
               dataRow={dataRow}
               count={count}
-              addToCart={addToCart}
-              handleForceUpdate={handleForceUpdate}
               columnName={columnName}
               createTotalColumn={this.createTotalColumn.bind(this)}
             />
@@ -74,7 +71,6 @@ class CBasketSale extends React.Component {
 class BasketSale extends React.Component {
   constructor(props) {
     super(props);
-    this.handleKeyInput = this.handleKeyInput.bind(this);
     this.state = { value: props.count, resize: false };
     this.statusShowKeyBoard = false;
     this.canvas = { width: 100, height: 100 };
@@ -90,14 +86,6 @@ class BasketSale extends React.Component {
       });
     }
     return true;
-  }
-
-  handleKeyInput(target) {
-    this.statusShowKeyBoard = /mousedown/i.test(target.type) ? false : true;
-    let { dataRow, addToCart, handleForceUpdate } = this.props,
-      { RUID_ML } = dataRow;
-    addToCart(Object.assign({ RUID_ML: RUID_ML, ...dataRow }), target.value);
-    handleForceUpdate();
   }
 
   render() {
@@ -136,11 +124,6 @@ class BasketSale extends React.Component {
             } else return null;
           })}
         </div>
-        <CchooseNumberPosition
-          value={count}
-          handleKeyInput={this.handleKeyInput}
-          statusShowKeyBoard={this.statusShowKeyBoard}
-        />
         {dataRow.src !== undefined ? (
           <div>
             <img
