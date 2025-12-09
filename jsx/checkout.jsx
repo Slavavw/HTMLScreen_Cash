@@ -9,8 +9,8 @@ class Checkout extends React.Component {
     this.createTotalColumn = this.createTotalColumn.bind(this);
     this.senderRequest = this.senderRequest.bind(this);
     this.TotalColumn = {};
-    this.state = { check: "", error: "", cartItems: {} };
     this.numberInterval = null;
+    this.state = { error: "", cartItems: {}, currentId: -1, count: -1, focus: false };
   }
 
   componentWillMount() {
@@ -24,6 +24,33 @@ class Checkout extends React.Component {
     let { cartItems, handleUpdate } = this.props.route || this.props;
     let newCartItems = await cartItems();
     this.setState({ cartItems: newCartItems }, () => handleUpdate());
+  }
+
+  componentWillReceiveProps(newProps) {
+    let { focus } = this.state;
+    let currentId = Array.from(Object.entries(this.state.cartItems))
+      .flat()
+      .filter((el, index) => index % 2 !== 0)
+      .filter((el) => el["dataRow"]["Active"]);
+    if (currentId.length) {
+      let { count } = currentId[0];
+      currentId = currentId[0].dataRow["RUID_ML"];
+      if (currentId !== this.state.currentId || count !== this.state.count) {
+        focus = true;
+        this.setState({ ...this.state, currentId: currentId, count: count, focus: focus });
+        /*let _that = this;
+        new Promise((resolve) => {
+          _that.setState({ focus: true, currentId: currentId }, () => {
+            setTimeout(resolve);
+          });
+        }).then(() => {
+          _that.setState({ focus: false });
+        });
+        */
+      } else {
+        if (focus) this.setState({ ...this.state, focus: !focus });
+      }
+    } else return true;
   }
 
   componentDidMount() {
@@ -46,7 +73,8 @@ class Checkout extends React.Component {
       .flat()
       .filter((el, index) => index % 2 !== 0);
     let { columnName } = this.props.route || this.props;
-    if (this.state.error === "") {
+    let { focus, error } = this.state;
+    if (error === "") {
       this.TotalColumn = Object.assign({});
       if (cartItems.length) {
         return (
@@ -98,8 +126,32 @@ class Checkout extends React.Component {
                 </tr>
                 {cartItems.map((item, index) => {
                   let { dataRow, count } = item;
+                  let style =
+                    dataRow["Active"] && focus
+                      ? {
+                          background: "linear-gradient(to bottom, rgba(0,102,153,.5) 40%,rgba(255,255,255,.5))",
+                          boxShadow: "inset 4px 4px rgba(10,10,10,.1)",
+                          transform: "scale(1.1)",
+                        }
+                      : {
+                          transitionProperty: "box-shadow, background, transform",
+                          transitionTiming: "ease-in-out",
+                          transitionDuration: ".5s",
+                          background: "rgb(0,102,153)",
+                          boxShadow: "0 0 2px white",
+                        };
                   return (
-                    <tr key={index}>
+                    <tr
+                      key={index}
+                      style={{
+                        padding: "2px",
+                        color: "black",
+                        background: "rgb(0, 102, 153)",
+                        border: "none",
+                        borderRadius: "5px",
+                        boxShadow: "0 0 2px white",
+                        ...style,
+                      }}>
                       {columnName.map((title, i) => (
                         <TTD
                           key={i}

@@ -239,7 +239,7 @@ server.on("request", (request, response) => {
       streamRead.on("end", async () => {
         await response.writeHead(200, { "content-type": "text/html; chatset=utf-8" });
         let styleBkground =
-          '<style type="text/css">body{background-image:url(/images/background/background.jpg);}</style>';
+          '<style type="text/css">body{background-image:url(/images/background/background.jpg);background-repeat: no-repeat;background-position: left top;background-attachment: fixed;background-size: cover;}</style>';
         stat(path.join(__dirname, "images", "background", "background.jpg"))
           .catch(() => {
             styleBkground = '<style type="text/css">body{background-image:url(/images/background_main.jpg);}</style>';
