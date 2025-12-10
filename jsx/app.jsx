@@ -1,6 +1,5 @@
 const React = require("react");
 const ReactDOM = require("react-dom");
-import "/css/style.css";
 const { Router, Route, browserHistory } = require("react-router");
 const { Checkout } = require("./checkout.jsx");
 const ErrorBundle = require("./errorBundle.jsx");

@@ -10,7 +10,8 @@ class Checkout extends React.Component {
     this.senderRequest = this.senderRequest.bind(this);
     this.TotalColumn = {};
     this.numberInterval = null;
-    this.state = { error: "", cartItems: {}, currentId: -1, count: -1, focus: false };
+    this.checkForUpdate = this.checkForUpdate.bind(this);
+    this.state = { error: "", cartItems: {}, focus: false };
   }
 
   componentWillMount() {
@@ -20,36 +21,45 @@ class Checkout extends React.Component {
     });
   }
 
+  checkForUpdate(newCartItems, cartItems) {
+    for (let [key, val] of Object.entries(newCartItems)) {
+      if (cartItems[key] === undefined) {
+        newCartItems[`${key}`]["dataRow"]["Active"] = true;
+        return true;
+      }
+      if (cartItems[key].count !== val.count) {
+        cartItems[`${key}`]["dataRow"]["Active"] = true;
+        return true;
+      }
+      cartItems[`${key}`]["dataRow"]["Active"] = false;
+    }
+    return false;
+  }
+
   async senderRequest() {
     let { cartItems, handleUpdate } = this.props.route || this.props;
     let newCartItems = await cartItems();
-    this.setState({ cartItems: newCartItems }, () => handleUpdate());
+    if (
+      this.checkForUpdate(newCartItems, this.state.cartItems) ||
+      this.checkForUpdate(this.state.cartItems, newCartItems)
+    )
+      this.setState({ cartItems: newCartItems }, () => handleUpdate());
   }
 
   componentWillReceiveProps(newProps) {
-    let { focus } = this.state;
     let currentId = Array.from(Object.entries(this.state.cartItems))
       .flat()
       .filter((el, index) => index % 2 !== 0)
       .filter((el) => el["dataRow"]["Active"]);
     if (currentId.length) {
-      let { count } = currentId[0];
-      currentId = currentId[0].dataRow["RUID_ML"];
-      if (currentId !== this.state.currentId || count !== this.state.count) {
-        focus = true;
-        this.setState({ ...this.state, currentId: currentId, count: count, focus: focus });
-        /*let _that = this;
-        new Promise((resolve) => {
-          _that.setState({ focus: true, currentId: currentId }, () => {
-            setTimeout(resolve);
-          });
-        }).then(() => {
-          _that.setState({ focus: false });
+      let _that = this;
+      new Promise((resolve) => {
+        _that.setState({ focus: !_that.state.focus }, () => {
+          setTimeout(resolve, 1000);
         });
-        */
-      } else {
-        if (focus) this.setState({ ...this.state, focus: !focus });
-      }
+      }).then(() => {
+        _that.setState({ focus: !_that.state.focus });
+      });
     } else return true;
   }
 
@@ -129,13 +139,16 @@ class Checkout extends React.Component {
                   let style =
                     dataRow["Active"] && focus
                       ? {
-                          background: "linear-gradient(to bottom, rgba(0,102,153,.5) 40%,rgba(255,255,255,.5))",
+                          color: "#ffffff",
+                          background: "linear-gradient(rgb(39 161 41 / 77%) 40%, rgb(90 203 62 / 50%))",
                           boxShadow: "inset 4px 4px rgba(10,10,10,.1)",
-                          transform: "scale(1.1)",
+                          boxShadow: "rgba(10, 10, 10, 0.1) 4px 4px inset",
+                          transform: "scale(1.01)",
+                          fontSize: "1.2em",
+                          fontWeight: "bold",
                         }
                       : {
-                          transitionProperty: "box-shadow, background, transform",
-                          transitionTiming: "ease-in-out",
+                          transitionProperty: "background, boxShadow, fontSize",
                           transitionDuration: ".5s",
                           background: "rgb(0,102,153)",
                           boxShadow: "0 0 2px white",
