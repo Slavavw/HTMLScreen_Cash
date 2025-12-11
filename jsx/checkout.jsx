@@ -40,12 +40,15 @@ class Checkout extends React.Component {
     let { cartItems, handleUpdate } = this.props.route || this.props;
     let newCartItems = await cartItems();
     if (Object.keys(newCartItems).length) {
-      if (
-        Object.hasOwnProperty("empty") ||
-        this.checkForUpdate(newCartItems, this.state.cartItems) ||
-        this.checkForUpdate(this.state.cartItems, newCartItems)
-      ) {
-        this.setState({ cartItems: Object.hasOwnProperty("empty") ? {} : newCartItems }, () => handleUpdate());
+      if (Object(newCartItems).hasOwnProperty("empty")) {
+        this.setState({ cartItems: {} }, () => handleUpdate());
+      } else {
+        if (
+          this.checkForUpdate(newCartItems, this.state.cartItems) ||
+          this.checkForUpdate(this.state.cartItems, newCartItems)
+        ) {
+          this.setState({ cartItems: newCartItems }, () => handleUpdate());
+        }
       }
     }
   }

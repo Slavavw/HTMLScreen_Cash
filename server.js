@@ -281,6 +281,7 @@ server.on("request", (request, response) => {
     } else if (pathname === "/pre_order") {
       fs.stat(path.join(__dirname, "source", "pre_order", "pre_order.json"), (err, stats) => {
         if (err) {
+          console.log("сука".red);
           response.writeHead(400, { "content-type": "application/text; chatset=utf-8" });
           response.end("empty");
         } else {

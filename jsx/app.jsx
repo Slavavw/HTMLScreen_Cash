@@ -82,8 +82,7 @@ async function getPreOrder() {
     });
     console.log(response.ok);
     if (!response.ok) {
-      cartItems = Object.assign({});
-      if (response.statusText === "empty") cartItems = Object.assign({ empty: true });
+      cartItems = Object.assign({ empty: true });
       return cartItems;
     } else {
       let data = await response.json();
