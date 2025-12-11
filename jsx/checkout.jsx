@@ -39,11 +39,15 @@ class Checkout extends React.Component {
   async senderRequest() {
     let { cartItems, handleUpdate } = this.props.route || this.props;
     let newCartItems = await cartItems();
-    if (
-      this.checkForUpdate(newCartItems, this.state.cartItems) ||
-      this.checkForUpdate(this.state.cartItems, newCartItems)
-    )
-      this.setState({ cartItems: newCartItems }, () => handleUpdate());
+    if (Object.keys(newCartItems).length) {
+      if (
+        Object.hasOwnProperty("empty") ||
+        this.checkForUpdate(newCartItems, this.state.cartItems) ||
+        this.checkForUpdate(this.state.cartItems, newCartItems)
+      ) {
+        this.setState({ cartItems: Object.hasOwnProperty("empty") ? {} : newCartItems }, () => handleUpdate());
+      }
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -54,11 +58,11 @@ class Checkout extends React.Component {
     if (currentId.length) {
       let _that = this;
       new Promise((resolve) => {
-        _that.setState({ focus: !_that.state.focus }, () => {
+        _that.setState({ focus: true }, () => {
           setTimeout(resolve, 1000);
         });
       }).then(() => {
-        _that.setState({ focus: !_that.state.focus });
+        _that.setState({ focus: false });
       });
     } else return true;
   }
