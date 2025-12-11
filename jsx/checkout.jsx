@@ -120,17 +120,29 @@ class Checkout extends React.Component {
                 <tr>
                   {columnName.map((title, i) => {
                     title = /PHOTO|src/i.exec(title) ? "" : title;
-                    return (
-                      <th
-                        scope='col'
-                        key={i}>
-                        {title}
-                      </th>
-                    );
+                    if (/изделие/i.test(title)) {
+                      return (
+                        <th
+                          scope='col'
+                          key={i}
+                          style={{ verticalAlign: "middle" }}>
+                          {title}
+                        </th>
+                      );
+                    } else
+                      return (
+                        <th
+                          scope='col'
+                          key={i}
+                          style={{ textAlign: "center", verticalAlign: "middle" }}>
+                          {title}
+                        </th>
+                      );
                   })}
                   <th
                     scope='col'
-                    key={columnName.length + 100}>
+                    key={columnName.length + 100}
+                    style={{ textAlign: "center", verticalAlign: "middle" }}>
                     количество
                   </th>
                 </tr>
@@ -173,7 +185,7 @@ class Checkout extends React.Component {
                           count={count}
                           createTotalColumn={this.createTotalColumn}></TTD>
                       ))}
-                      <td>{count}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{count}</td>
                     </tr>
                   );
                 })}
@@ -215,18 +227,37 @@ class TTD extends React.Component {
       }
       if (/PHOTO|src/i.test(title))
         return (
-          <td ref='parent'>
-            <div
-              style={{
-                backgroundImage: `url(${data})`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "contain",
-                width: "50px",
-                height: "50px",
-              }}></div>
+          <td
+            ref='parent'
+            style={{
+              backgroundImage: `url(${data})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundOrigin: "border-box",
+              backgroundPosition: "center center",
+              width: "70px",
+              height: "70px",
+              margin: "0px 0px",
+              padding: "0px 0px",
+            }}></td>
+        );
+      else if (/изделие/i.test(title)) {
+        return (
+          <td
+            ref='parent'
+            style={{ verticalAlign: "middle" }}>
+            {dataRow[`${title}`]}
           </td>
         );
-      else return <td ref='parent'>{dataRow[`${title}`]}</td>;
+      } else {
+        return (
+          <td
+            ref='parent'
+            style={{ textAlign: "center", verticalAlign: "middle" }}>
+            {dataRow[`${title}`]}
+          </td>
+        );
+      }
     } else return null;
   }
 }
