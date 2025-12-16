@@ -109,7 +109,7 @@ async function StartBAT() {
         console.log(`Сервер запущен по адреcу: http://${IPv4}:${ServerPort}`.bgBrightGreen);
         fs.writeFile(
           path.join(__dirname, "start.bat"),
-          `start "C:Program FilesGoogleChromeApplicationchrome.exe" "http://${IPv4}:${ServerPort}"`,
+          `"C:\/Program Files\/Google\/Chrome\/Application\/chrome.exe" --start-fullscreen "http://${IPv4}:${ServerPort}"`,
           cb
         );
       });
