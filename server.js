@@ -118,8 +118,7 @@ SET StartURL="http://${IPv4}:${ServerPort}/"
 REM Запуск в режиме киоска
 start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run
 exit`;
-
-        fs.writeFile(path.join(__dirname, "start.bat"), command, cb);
+        await fs.writeFile(path.join(__dirname, "start.bat"), command, cb);
 
         /*  fs.writeFile(
           path.join(__dirname, "start.bat"),
@@ -129,6 +128,17 @@ exit`;
       });
     });
 }
+
+server.on("error", (e) => {
+  if (e.code === "EADDRINUSE") {
+    console.error("Address in use, retrying...");
+    setTimeout(() => {
+      server.close();
+      process.exit();
+      // server.listen(ServerPort, IPv4);
+    }, 1000);
+  }
+});
 
 (function () {
   Promise.race(
