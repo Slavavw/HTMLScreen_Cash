@@ -97,9 +97,9 @@ console.log(IPv4);
 let server = new http.Server();
 
 async function StartBAT() {
-  stat(path.join(__dirname, "source", "options.json"))
+  stat(path.join(__dirname, "serverinterval.json"))
     .then(() => {
-      ServerPort = require(path.join(__dirname, "source", "options.json")).ServerPort;
+      ServerPort = require(path.join(__dirname, "serverinterval.json")).ServerPort;
     })
     .catch(() => {
       ServerPort = 50001;
@@ -107,11 +107,25 @@ async function StartBAT() {
     .finally(() => {
       server.listen(ServerPort, IPv4, async () => {
         console.log(`Сервер запущен по адреcу: http://${IPv4}:${ServerPort}`.bgBrightGreen);
-        fs.writeFile(
+
+        let command = `@echo off
+REM Путь к msedge.exe (может отличаться, если у вас 32-битная система)
+SET EdgePath="C:/\Program Files (x86)/\Microsoft/\Edge/\Application/\msedge.exe"
+
+REM URL сайта для киоска
+SET StartURL="http://${IPv4}:${ServerPort}/"
+
+REM Запуск в режиме киоска
+start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run
+exit`;
+
+        fs.writeFile(path.join(__dirname, "start.bat"), command, cb);
+
+        /*  fs.writeFile(
           path.join(__dirname, "start.bat"),
-          `"C:\/Program Files\/Google\/Chrome\/Application\/chrome.exe" --start-fullscreen "http://${IPv4}:${ServerPort}"`,
+          `start "C:Program FilesGoogleChromeApplicationchrome.exe" "http://${IPv4}:${ServerPort}"`,
           cb
-        );
+        );*/
       });
     });
 }
