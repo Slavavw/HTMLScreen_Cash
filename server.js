@@ -110,7 +110,7 @@ async function StartBAT() {
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ организация генератора получения установленных на компе браузеров, первый будет edge
         let Browser = [
           {
-            path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge1.exe",
+            path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
             command: `@echo off
             REM Путь к msedge.exe (может отличаться, если у вас 32-битная система)
             SET EdgePath="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
