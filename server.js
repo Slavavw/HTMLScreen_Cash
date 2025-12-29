@@ -95,7 +95,6 @@ const IPv4 =
 console.log(IPv4);
 
 let server = new http.Server();
-
 async function StartBAT() {
   stat(path.join(__dirname, "serverinterval.json"))
     .then(() => {
@@ -108,24 +107,56 @@ async function StartBAT() {
       server.listen(ServerPort, IPv4, async () => {
         console.log(`Сервер запущен по адреcу: http://${IPv4}:${ServerPort}`.bgBrightGreen);
 
-        let command = `@echo off
-REM Путь к msedge.exe (может отличаться, если у вас 32-битная система)
-SET EdgePath="C:/\Program Files (x86)/\Microsoft/\Edge/\Application/\msedge.exe"
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ организация генератора получения установленных на компе браузеров, первый будет edge
+        let Browser = [
+          {
+            path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge1.exe",
+            command: `@echo off
+            REM Путь к msedge.exe (может отличаться, если у вас 32-битная система)
+            SET EdgePath="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
+            REM URL сайта для киоска
+            SET StartURL="http://${IPv4}:${ServerPort}/"
+            REM Запуск в режиме киоска
+            start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run
+            exit`,
+          },
+          {
+            path: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+            command: `@echo off
+            SET EdgePath="C:/Program Files/Google/Chrome/Application/chrome.exe"
+            SET StartURL="http://${IPv4}:${ServerPort}/"
+            start "" %EdgePath% %StartURL%
+            exit`,
+          },
+          {
+            path: "C:/Program Files/Mozilla Firefox/firefox.exe",
+            command: `SET EdgePath="C:/Program Files/Mozilla Firefox/firefox.exe"
+            SET StartURL="http://${IPv4}:${ServerPort}/"
+            start "" %EdgePath% %StartURL%
+            exit`,
+          },
+        ];
 
-REM URL сайта для киоска
-SET StartURL="http://${IPv4}:${ServerPort}/"
+        async function* getCommand() {
+          for (let { path, command } of Browser) {
+            try {
+              let Stats = await stat(path);
+              yield await Promise.resolve(command);
+            } catch (e) {
+              yield "no file";
+            }
+          }
+        }
 
-REM Запуск в режиме киоска
-start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run
-exit`;
-        await fs.writeFile(path.join(__dirname, "start.bat"), command, cb);
-
-        /*  fs.writeFile(
-          path.join(__dirname, "start.bat"),
-          `start "C:Program FilesGoogleChromeApplicationchrome.exe" "http://${IPv4}:${ServerPort}"`,
-          cb
-        );*/
+        for await (let command of getCommand()) {
+          if (!/no file/.test(command)) {
+            console.log("command@@@@@@@".yellow, command);
+            await fs.writeFile(path.join(__dirname, "start.bat"), command, cb);
+            return;
+          }
+        }
       });
+      //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END
     });
 }
 
