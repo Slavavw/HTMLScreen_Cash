@@ -1,7 +1,7 @@
 const React = require("react");
-const { getBYN, convertToNumeric } = require("../js/formatFunction.js");
-const ErrorBundle = require("./errorBundle.jsx");
-const AnimationCircle = require("./animationCircle.jsx");
+const { getBYN, convertToNumeric } = require("../../js/formatFunction.js");
+const ErrorBundle = require("../../jsx/errorBundle.jsx");
+const AnimationCircle = require("../../jsx/animationCircle.jsx");
 
 class Checkout extends React.Component {
   constructor(props) {
@@ -118,10 +118,6 @@ class Checkout extends React.Component {
                     );
                   else return null;
                 })}
-                <col
-                  id='количество'
-                  key={columnName.length + 100}
-                />
               </colgroup>
               <tbody>
                 <tr>
@@ -136,22 +132,26 @@ class Checkout extends React.Component {
                           {title}
                         </th>
                       );
-                    } else
+                    }
+                    if (/количество/i.test(title)) {
                       return (
                         <th
                           scope='col'
-                          key={i}
+                          key={columnName.length + 100}
                           style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {title}
+                          количество
                         </th>
                       );
+                    }
+                    return (
+                      <th
+                        scope='col'
+                        key={i}
+                        style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {title}
+                      </th>
+                    );
                   })}
-                  <th
-                    scope='col'
-                    key={columnName.length + 100}
-                    style={{ textAlign: "center", verticalAlign: "middle" }}>
-                    количество
-                  </th>
                 </tr>
                 {cartItems.map((item, index) => {
                   let { dataRow, count } = item;
@@ -184,15 +184,18 @@ class Checkout extends React.Component {
                         boxShadow: "0 0 2px white",
                         ...style,
                       }}>
-                      {columnName.map((title, i) => (
-                        <TTD
-                          key={i}
-                          title={title}
-                          dataRow={dataRow}
-                          count={count}
-                          createTotalColumn={this.createTotalColumn}></TTD>
-                      ))}
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{count}</td>
+                      {columnName.map((title, i) =>
+                        /количество/i.test(title) ? (
+                          <td style={{ textAlign: "center", verticalAlign: "middle" }}>{count}</td>
+                        ) : (
+                          <TTD
+                            key={i}
+                            title={title}
+                            dataRow={dataRow}
+                            count={count}
+                            createTotalColumn={this.createTotalColumn}></TTD>
+                        )
+                      )}
                     </tr>
                   );
                 })}
