@@ -110,7 +110,7 @@ async function StartBAT() {
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ организация генератора получения установленных на компе браузеров, первый будет edge
         let Browser = [
           {
-            path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge1.exe",
+            path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
             command: `@echo off            
             SET EdgePath="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
             REM URL сайта для киоска
@@ -120,14 +120,14 @@ async function StartBAT() {
             exit`,
           },
           {
-            path: "C:/Program Files/Google/Chrome/Application/chrome1.exe",
+            path: "C:/Program Files/Google/Chrome/Application/chrome.exe",
             command: `@echo off
             SET EdgePath="C:/Program Files/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
             exit`,
           },
           {
-            path: "C:/Program Files(x86)/Google/Chrome/Application/chrome1.exe",
+            path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
             command: `@echo off
             SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
