@@ -120,14 +120,14 @@ async function StartBAT() {
             exit`,
           },
           {
-            path: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+            path: "C:/Program Files/Google/Chrome/Application/chrome1.exe",
             command: `@echo off
             SET EdgePath="C:/Program Files/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
             exit`,
           },
           {
-            path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
+            path: "C:/Program Files(x86)/Google/Chrome/Application/chrome1.exe",
             command: `@echo off
             SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
@@ -136,7 +136,7 @@ async function StartBAT() {
           {
             path: "C:/Program Files/Mozilla Firefox/firefox.exe",
             command: `SET EdgePath="C:/Program Files/Mozilla Firefox/firefox.exe"            
-            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app= http://${IPv4}:${ServerPort}/
+            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
             exit`,
           },
         ];
