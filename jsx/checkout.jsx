@@ -1,7 +1,7 @@
 const React = require("react");
-const { getBYN, convertToNumeric } = require("../../js/formatFunction.js");
-const ErrorBundle = require("../../jsx/errorBundle.jsx");
-const AnimationCircle = require("../../jsx/animationCircle.jsx");
+const { getBYN, convertToNumeric } = require("../js/formatFunction.js");
+const ErrorBundle = require("./errorBundle.jsx");
+const AnimationCircle = require("./animationCircle.jsx");
 
 class Checkout extends React.Component {
   constructor(props) {
