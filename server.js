@@ -111,8 +111,7 @@ async function StartBAT() {
         let Browser = [
           {
             path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge1.exe",
-            command: `@echo off
-            REM Путь к msedge.exe (может отличаться, если у вас 32-битная система)
+            command: `@echo off            
             SET EdgePath="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
             REM URL сайта для киоска
             SET StartURL="http://${IPv4}:${ServerPort}/"
@@ -122,22 +121,17 @@ async function StartBAT() {
           },
           {
             path: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-            command: `rem :: set file location
-
-if exist %localappdata%/\google/\chrome/\application/\chrome.exe (
- set chrome_exe="%localappdata%/\google/\chrome/\application/\chrome.exe"
-)  
-
-if exist %PROGRAMFILES(x86)%/\google/\chrome/\application/\chrome.exe (
- set chrome_exe="%PROGRAMFILES(x86)%/\google/\chrome/\application/\chrome.exe"
- )
-
-if exist %PROGRAMFILES%/\google/\chrome/\application/\chrome.exe (
- set chrome_exe="%PROGRAMFILES%/\google/\chrome/\application/\chrome.exe"
- ) 
-
- rem :: run chrome
-%chrome_exe% --start-fullscreen --app=http://${IPv4}:${ServerPort}`,
+            command: `@echo off
+            SET EdgePath="C:/Program Files/Google/Chrome/Application/chrome.exe"            
+            start "" %EdgePath% -start--fullscreen "" --app=http://${IPv4}:${ServerPort}/
+            exit`,
+          },
+          {
+            path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
+            command: `@echo off
+            SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
+            start "" %EdgePath% -start--fullscreen "" --app=http://${IPv4}:${ServerPort}/
+            exit`,
           },
           {
             path: "C:/Program Files/Mozilla Firefox/firefox.exe",
