@@ -1,8 +1,16 @@
-@echo off
-            REM Путь к msedge.exe (может отличаться, если у вас 32-битная система)
-            SET EdgePath="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
-            REM URL сайта для киоска
-            SET StartURL="http://192.168.0.116:4001/"
-            REM Запуск в режиме киоска
-            start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run
-            exit
+rem :: set file location
+
+if exist %localappdata%/google/chrome/application/chrome.exe (
+ set chrome_exe="%localappdata%/google/chrome/application/chrome.exe"
+)  
+
+if exist %PROGRAMFILES(x86)%/google/chrome/application/chrome.exe (
+ set chrome_exe="%PROGRAMFILES(x86)%/google/chrome/application/chrome.exe"
+ )
+
+if exist %PROGRAMFILES%/google/chrome/application/chrome.exe (
+ set chrome_exe="%PROGRAMFILES%/google/chrome/application/chrome.exe"
+ ) 
+
+ rem :: run chrome
+%chrome_exe% --start-fullscreen --app=http://192.168.0.116:50
