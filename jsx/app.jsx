@@ -5,7 +5,7 @@ const { Checkout } = require("./checkout.jsx");
 const ErrorBundle = require("./errorBundle.jsx");
 const AnimationCircle = require("./animationCircle.jsx");
 
-let cartItems = {};
+let cartItems = [];
 
 // Описание структуры колонок даннных (имя, видимость)
 // Описание структуры колонок даннных (имя, видимость)
@@ -82,14 +82,33 @@ async function getPreOrder() {
     });
     console.log(response.ok);
     if (!response.ok) {
-      cartItems = Object.assign({ empty: true });
+      cartItems = Array.from([]);
       return cartItems;
     } else {
       let data = await response.json();
       console.log("data", typeof data, data);
       if (Object.keys(data).length) {
-        cartItems = Object.assign(data);
-      } else cartItems = Object.assign({});
+        data = Object.entries(data).sort((x, y) => y[1].dataRow.Active - x[1].dataRow.Active);
+        data = data.reduce((prev, cur) => {
+          let o = {};
+          if (!cartItems.filter((el) => el[0] === cur[0]).length) {
+            cur[1].dataRow.Active = true;
+            o[`${cur[0]}`] = cur[1];
+            return Object.assign(prev, o);
+          }
+          if (cartItems.filter((el) => el[0] === cur[0])[0][1].count !== cur[1].count) {
+            cur[1].dataRow.Active = true;
+            o[`${cur[0]}`] = cur[1];
+            return Object.assign(prev, o);
+          }
+          cur[1].dataRow.Active = false;
+          o[`${cur[0]}`] = cur[1];
+          return Object.assign(prev, o);
+        }, {});
+        data = Object.entries(data).sort((x, y) => y[1].dataRow.Active - x[1].dataRow.Active);
+
+        cartItems = Array.from(data);
+      } else cartItems = Array.from([]);
       return cartItems;
     }
   } catch (e) {

@@ -11,7 +11,7 @@ class Checkout extends React.Component {
     this.TotalColumn = {};
     this.numberInterval = null;
     this.checkForUpdate = this.checkForUpdate.bind(this);
-    this.state = { error: "", cartItems: {}, focus: false };
+    this.state = { error: "", cartItems: [], focus: false };
   }
 
   componentWillMount() {
@@ -22,16 +22,37 @@ class Checkout extends React.Component {
   }
 
   checkForUpdate(newCartItems, cartItems) {
-    for (let [key, val] of Object.entries(newCartItems)) {
-      if (cartItems[key] === undefined) {
-        newCartItems[`${key}`]["dataRow"]["Active"] = true;
+    for (let [key, val] of newCartItems) {
+      if (!cartItems.filter((el) => el[0] === key).length) {
+        newCartItems = Array.from(
+          newCartItems.map((el) => {
+            if (el[0] === key) {
+              el[1].dataRow.Active = true;
+            }
+            return el;
+          })
+        );
         return true;
       }
-      if (cartItems[key].count !== val.count) {
-        cartItems[`${key}`]["dataRow"]["Active"] = true;
+      if (cartItems.filter((el) => el[0] === key)[0][1].count !== val.count) {
+        cartItems = Array.from(
+          cartItems.map((el) => {
+            if (el[0] === key) {
+              el[1].dataRow.Active = true;
+            }
+            return el;
+          })
+        );
         return true;
       }
-      cartItems[`${key}`]["dataRow"]["Active"] = false;
+      cartItems = Array.from(
+        cartItems.map((el) => {
+          if (el[0] === key) {
+            el[1].dataRow.Active = false;
+          }
+          return el;
+        })
+      );
     }
     return false;
   }
@@ -39,26 +60,21 @@ class Checkout extends React.Component {
   async senderRequest() {
     let { cartItems, handleUpdate } = this.props.route || this.props;
     let newCartItems = await cartItems();
-    if (Object.keys(newCartItems).length) {
-      if (Object(newCartItems).hasOwnProperty("empty")) {
-        this.setState({ cartItems: {} }, () => handleUpdate());
-      } else {
-        if (
-          this.checkForUpdate(newCartItems, this.state.cartItems) ||
-          this.checkForUpdate(this.state.cartItems, newCartItems)
-        ) {
-          this.setState({ cartItems: newCartItems }, () => handleUpdate());
-        }
+    if (newCartItems.length) {
+      if (
+        this.checkForUpdate(newCartItems, this.state.cartItems) ||
+        this.checkForUpdate(this.state.cartItems, newCartItems)
+      ) {
+        this.setState({ cartItems: newCartItems }, () => handleUpdate());
       }
+    } else {
+      this.setState({ cartItems: [] }, () => handleUpdate());
     }
   }
 
   componentWillReceiveProps(newProps) {
-    let currentId = Array.from(Object.entries(this.state.cartItems))
-      .flat()
-      .filter((el, index) => index % 2 !== 0)
-      .filter((el) => el["dataRow"]["Active"]);
-    if (currentId.length) {
+    let { cartItems } = this.state;
+    if (cartItems.filter((el) => el[1].dataRow.Active).length) {
       let _that = this;
       new Promise((resolve) => {
         _that.setState({ focus: true }, () => {
@@ -86,9 +102,8 @@ class Checkout extends React.Component {
   }
 
   render() {
-    let cartItems = Array.from(Object.entries(this.state.cartItems))
-      .flat()
-      .filter((el, index) => index % 2 !== 0);
+    let { cartItems } = this.state;
+    cartItems = Array.from(cartItems.flat().filter((el, index) => index % 2));
     let { columnName } = this.props.route || this.props;
     let { focus, error } = this.state;
     if (error === "") {
