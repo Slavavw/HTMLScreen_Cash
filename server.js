@@ -9,7 +9,7 @@ require("@babel/register")({ presets: ["@babel/env", "@babel/react"] });
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 
-let { IntervalServer, ServerPort } = require(path.join(__dirname, "serverinterval.json"));
+let { IntervalServer, ServerPort, currentBrowser } = require(path.join(__dirname, "serverinterval.json"));
 
 const replaceReservedSymbol = (str) => {
   let regEx = /(?<space>[%\s])|(?<amp>&)|(?<lt><)|(?<gt>>)|(?<apos>')|(?<quote>")/g;
@@ -110,36 +110,47 @@ async function StartBAT() {
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ организация генератора получения установленных на компе браузеров, первый будет edge
         let Browser = [
           {
-            path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge_notWork.exe",
-            command: `@echo off            
+            currentBrowser: "Microsoft Edge",
+            path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+            command: `@echo off
+            set DesktopPath=%USERPROFILE%\Desktop
+            cd %DesktopPath%            
             SET EdgePath="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
             REM URL сайта для киоска
             SET StartURL="http://${IPv4}:${ServerPort}/"
             REM Запуск в режиме киоска
-            start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run
+            start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run --disable-features=TranslateUI
             exit`,
           },
           {
+            currentBrowser: "Google Chrome",
             path: "C:/Program Files/Google/Chrome/Application/chrome.exe",
             command: `@echo off
             SET EdgePath="C:/Program Files/Google/Chrome/Application/chrome.exe"            
-            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
+            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}
             exit`,
           },
           {
+            currentBrowser: "Google Chrome",
             path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
             command: `@echo off
             SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
-            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
+            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
           },
           {
+            currentBrowser: "Mozilla Firefox",
             path: "C:/Program Files/Mozilla Firefox/firefox.exe",
             command: `SET EdgePath="C:/Program Files/Mozilla Firefox/firefox.exe"            
-            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --app=http://${IPv4}:${ServerPort}/
+            start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
           },
         ];
+
+        Browser = Array.from([
+          ...Browser.filter((x) => x.currentBrowser === `${currentBrowser}`),
+          ...Browser.filter((x) => x.currentBrowser !== `${currentBrowser}`),
+        ]);
 
         async function* getCommand() {
           for (let { path, command } of Browser) {
