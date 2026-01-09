@@ -109,8 +109,19 @@ class Checkout extends React.Component {
     if (error === "") {
       this.TotalColumn = Object.assign({});
       if (cartItems.length) {
+        cartItems.map((item, index) => {
+          let { dataRow, count } = item;
+          columnName.map((title, i) => {
+            if (Object.hasOwn(dataRow, title)) {
+              if (/сумма со скидкой/is.exec(title) !== null) {
+                this.createTotalColumn(`Итого по чеку `, convertToNumeric(dataRow[`${title}`]));
+              }
+            }
+          });
+        });
         return (
           <div>
+            <TBasketSale_itogo TotalColumn={this.TotalColumn}></TBasketSale_itogo>
             <table
               className='table table-bordered'
               ref={"table table-bordered"}
@@ -216,7 +227,6 @@ class Checkout extends React.Component {
                 })}
               </tbody>
             </table>
-            <TBasketSale_itogo TotalColumn={this.TotalColumn}></TBasketSale_itogo>
           </div>
         );
       } else return null;
@@ -310,7 +320,7 @@ class TBasketSale_itogo extends React.Component {
       <div
         className='BasketSale_itogo'
         ref='BasketSale_itogo'
-        style={{ marginTop: "30px" }}>
+        style={{ marginTop: "30px", marginBottom: "30px", color: "red", fontWeight: "bold" }}>
         <span>{this.message}</span>
       </div>
     );

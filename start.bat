@@ -3,5 +3,5 @@
             REM URL сайта для киоска
             SET StartURL="http://192.168.0.116:3434/"
             REM Запуск в режиме киоска
-            start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run
+            start "" %EdgePath%
             exit
