@@ -186,7 +186,20 @@ async function StartBAT() {
             command: `SET EdgePath="C:/Program Files/Mozilla Firefox/firefox.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
-            shortCart: "",
+            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+              Dim strUserProfile
+              strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
+              Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/Customer of display.LNK")              
+              lnk.TargetPath =  "C:/Program Files/Mozilla Firefox/firefox.exe"  
+              lnk.Arguments = "---user-data-dir=C:/Temp/Supertemp/smth -kiosk --start-fullscreen --disable-translate --disable-features=Translate http://${IPv4}:${ServerPort}" 
+              lnk.Description = "Shutdown"
+              'lnk.HotKey = "ALT+CTRL+F"              
+			        lnk.IconLocation = "%SystemRoot%/SystemResources/shell32.dll.mun, 94"
+              lnk.WindowStyle = "1"
+              lnk.WorkingDirectory = "C:/Program Files/Mozilla Firefox"
+              lnk.Save
+              objShell.Run """" & strUserProfile & "/Desktop/Customer of display.LNK" & """", 1, False 
+              Set lnk = Nothing`,
           },
         ];
 
