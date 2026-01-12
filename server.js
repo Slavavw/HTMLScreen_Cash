@@ -121,6 +121,7 @@ async function StartBAT() {
             REM Запуск в режиме киоска
             start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run --disable-features=TranslateUI
             exit`,
+            shortCart: "",
           },
           {
             currentBrowser: "Google Chrome",
@@ -129,14 +130,46 @@ async function StartBAT() {
             SET EdgePath="C:/Program Files/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}
             exit`,
+            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+              Dim strUserProfile
+              strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
+              Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/CustomDisplay.lnk")
+              lnk.TargetPath =  "C:/Program Files/Google/Chrome/Application/chrome.exe"  
+              lnk.Arguments = "---user-data-dir=C:/Temp/Supertemp/smth -kiosk --start-fullscreen --disable-translate --disable-features=Translate http://${IPv4}:${ServerPort}" 
+              lnk.Description = "Shutdown"
+              'lnk.HotKey = "ALT+CTRL+F"              
+			        lnk.IconLocation = "%SystemRoot%/SystemResources/shell32.dll.mun, 94"
+              lnk.WindowStyle = "1"
+              lnk.WorkingDirectory = "C:/Program Files/Google/Chrome/Application"
+              lnk.Save
+              objShell.Run """" & strUserProfile & "/Desktop/CustomDisplay.lnk" & """", 1, False 
+              Set lnk = Nothing`,
           },
           {
             currentBrowser: "Google Chrome",
             path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
-            command: `@echo off
+            command: `start explorer.exe C:\Users\Test\Desktop\test.lnk
+            SET lnk="%USERPROFILE% C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"
+
+             
+            @echo off
             SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
+            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+              Dim strUserProfile
+              strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
+              Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/Customer of display.LNK")              
+              lnk.TargetPath =  "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"  
+              lnk.Arguments = "---user-data-dir=C:/Temp/Supertemp/smth -kiosk --start-fullscreen --disable-translate --disable-features=Translate http://${IPv4}:${ServerPort}" 
+              lnk.Description = "Shutdown"
+              'lnk.HotKey = "ALT+CTRL+F"              
+			        lnk.IconLocation = "%SystemRoot%/SystemResources/shell32.dll.mun, 94"
+              lnk.WindowStyle = "1"
+              lnk.WorkingDirectory = "C:/Program Files(x86)/Google/Chrome/Application"
+              lnk.Save
+              objShell.Run """" & strUserProfile & "/Desktop/Customer of display.LNK" & """", 1, False 
+              Set lnk = Nothing`,
           },
           {
             currentBrowser: "Mozilla Firefox",
@@ -144,6 +177,7 @@ async function StartBAT() {
             command: `SET EdgePath="C:/Program Files/Mozilla Firefox/firefox.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
+            shortCart: "",
           },
         ];
 
@@ -153,20 +187,20 @@ async function StartBAT() {
         ]);
 
         async function* getCommand() {
-          for (let { path, command } of Browser) {
+          for (let { path, command, shortCart } of Browser) {
             try {
               let Stats = await stat(path);
-              yield await Promise.resolve(command);
+              yield await Promise.resolve(Object.assign({}, { command: `${command}`, shortCart: `${shortCart}` }));
             } catch (e) {
               yield "no file";
             }
           }
         }
 
-        for await (let command of getCommand()) {
+        for await (let { command, shortCart } of getCommand()) {
           if (!/no file/.test(command)) {
-            console.log("command@@@@@@@".yellow, command);
             await fs.writeFile(path.join(__dirname, "start.bat"), command, cb);
+            await fs.writeFile(path.join(__dirname, "createLink.vbs"), shortCart, cb);
             return;
           }
         }
