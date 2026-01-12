@@ -121,7 +121,20 @@ async function StartBAT() {
             REM Запуск в режиме киоска
             start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run --disable-features=TranslateUI
             exit`,
-            shortCart: "",
+            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+              Dim strUserProfile
+              strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
+              Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/CustomDisplay.lnk")
+              lnk.TargetPath =  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"  
+              lnk.Arguments = "--kiosk http://${IPv4}:${ServerPort} --edge-kiosk-type=fullscreen --no-first-run --disable-features=TranslateUI" 
+              lnk.Description = "Shutdown"
+              'lnk.HotKey = "ALT+CTRL+F"              
+			        lnk.IconLocation = "%SystemRoot%/SystemResources/shell32.dll.mun, 94"
+              lnk.WindowStyle = "1"
+              lnk.WorkingDirectory = "C:/Program Files (x86)/Microsoft/Edge/Application"
+              lnk.Save
+              objShell.Run """" & strUserProfile & "/Desktop/CustomDisplay.lnk" & """", 1, False 
+              Set lnk = Nothing`,
           },
           {
             currentBrowser: "Google Chrome",
@@ -148,11 +161,7 @@ async function StartBAT() {
           {
             currentBrowser: "Google Chrome",
             path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
-            command: `start explorer.exe C:\Users\Test\Desktop\test.lnk
-            SET lnk="%USERPROFILE% C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"
-
-             
-            @echo off
+            command: `@echo off
             SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
