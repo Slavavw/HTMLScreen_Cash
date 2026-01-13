@@ -239,7 +239,7 @@ async function StartBAT() {
 
         for await (let { start, createLink, alttab } of getCommand()) {
           if (!/no file/.test(start)) {
-            console.log("start".yellow, start.blue);
+            console.log("start".yellow, start);
             console.log("createLink".yellow, createLink);
             console.log("alttab".yellow, alttab);
             await fs.writeFile(path.join(__dirname, "start.bat"), start, cb);
