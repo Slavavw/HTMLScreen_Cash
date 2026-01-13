@@ -168,22 +168,22 @@ async function StartBAT() {
           },
           {
             currentBrowser: "Google Chrome",
-            path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
+            path: "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
             start: `@echo off
-            SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
+            SET EdgePath="C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
             createLink: `Set objShell = WScript.CreateObject("WScript.Shell")
               Dim strUserProfile
               strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
               Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/Customer of display.LNK")              
-              lnk.TargetPath =  "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"  
+              lnk.TargetPath =  "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"  
               lnk.Arguments = "---user-data-dir=C:/Temp/Supertemp/smth -kiosk --start-fullscreen --disable-translate --disable-features=Translate http://${IPv4}:${ServerPort}" 
               lnk.Description = "Shutdown"
               'lnk.HotKey = "ALT+CTRL+F"              
 			        lnk.IconLocation = "%SystemRoot%/SystemResources/shell32.dll.mun, 94"
               lnk.WindowStyle = "1"
-              lnk.WorkingDirectory = "C:/Program Files(x86)/Google/Chrome/Application"
+              lnk.WorkingDirectory = "C:/Program Files (x86)/Google/Chrome/Application"
               lnk.Save
               objShell.Run """" & strUserProfile & "/Desktop/Customer of display.LNK" & """", 1, False 
               Set lnk = Nothing
@@ -226,13 +226,14 @@ async function StartBAT() {
 
         async function* getCommand() {
           for (let { path, start, createLink, alttab } of Browser) {
+            console.log("path", path);
             try {
               let Stats = await stat(path);
               yield await Promise.resolve(
                 Object.assign({}, { start: `${start}`, createLink: `${createLink}`, alttab: `${alttab}` })
               );
             } catch (e) {
-              yield "no file";
+              yield { start: "no file" };
             }
           }
         }
