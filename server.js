@@ -112,7 +112,7 @@ async function StartBAT() {
           {
             currentBrowser: "Microsoft Edge",
             path: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
-            command: `@echo off
+            start: `@echo off
             set DesktopPath=%USERPROFILE%\Desktop
             cd %DesktopPath%            
             SET EdgePath="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
@@ -121,12 +121,12 @@ async function StartBAT() {
             REM Запуск в режиме киоска
             start "" %EdgePath% --kiosk %StartURL% --edge-kiosk-type=fullscreen --no-first-run --disable-features=TranslateUI
             exit`,
-            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+            createLink: `Set objShell = WScript.CreateObject("WScript.Shell")
               Dim strUserProfile
               strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
               Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/CustomDisplay.lnk")
               lnk.TargetPath =  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"  
-              lnk.Arguments = "--kiosk http://${IPv4}:${ServerPort} --edge-kiosk-type=fullscreen --no-first-run --disable-features=TranslateUI" 
+              lnk.Arguments = "--kiosk http://${IPv4}:${ServerPort} --edge-kiosk-type=fullscreen --no-first-run --disable-features=TranslateUI"               
               lnk.Description = "Shutdown"
               'lnk.HotKey = "ALT+CTRL+F"              
 			        lnk.IconLocation = "%SystemRoot%/SystemResources/shell32.dll.mun, 94"
@@ -134,16 +134,20 @@ async function StartBAT() {
               lnk.WorkingDirectory = "C:/Program Files (x86)/Microsoft/Edge/Application"
               lnk.Save
               objShell.Run """" & strUserProfile & "/Desktop/CustomDisplay.lnk" & """", 1, False 
-              Set lnk = Nothing`,
+              Set lnk = Nothing
+              Set objShell = Nothing`,
+            alttab: `Set WshShell = WScript.CreateObject("WScript.Shell") 
+              WshShell.SendKeys "%{TAB}" 
+              Set WshShell = Nothing`,
           },
           {
             currentBrowser: "Google Chrome",
             path: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-            command: `@echo off
+            start: `@echo off
             SET EdgePath="C:/Program Files/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}
             exit`,
-            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+            createLink: `Set objShell = WScript.CreateObject("WScript.Shell")
               Dim strUserProfile
               strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
               Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/CustomDisplay.lnk")
@@ -156,16 +160,20 @@ async function StartBAT() {
               lnk.WorkingDirectory = "C:/Program Files/Google/Chrome/Application"
               lnk.Save
               objShell.Run """" & strUserProfile & "/Desktop/CustomDisplay.lnk" & """", 1, False 
-              Set lnk = Nothing`,
+              Set lnk = Nothing
+              Set objShell = Nothing`,
+            alttab: `Set WshShell = WScript.CreateObject("WScript.Shell") 
+              WshShell.SendKeys "%{TAB}" 
+              Set WshShell = Nothing`,
           },
           {
             currentBrowser: "Google Chrome",
             path: "C:/Program Files(x86)/Google/Chrome/Application/chrome.exe",
-            command: `@echo off
+            start: `@echo off
             SET EdgePath="C:/Program Files(x86)/Google/Chrome/Application/chrome.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
-            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+            createLink: `Set objShell = WScript.CreateObject("WScript.Shell")
               Dim strUserProfile
               strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
               Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/Customer of display.LNK")              
@@ -178,15 +186,19 @@ async function StartBAT() {
               lnk.WorkingDirectory = "C:/Program Files(x86)/Google/Chrome/Application"
               lnk.Save
               objShell.Run """" & strUserProfile & "/Desktop/Customer of display.LNK" & """", 1, False 
-              Set lnk = Nothing`,
+              Set lnk = Nothing
+              Set objShell = Nothing`,
+            alttab: `Set WshShell = WScript.CreateObject("WScript.Shell") 
+              WshShell.SendKeys "%{TAB}" 
+              Set WshShell = Nothing`,
           },
           {
             currentBrowser: "Mozilla Firefox",
             path: "C:/Program Files/Mozilla Firefox/firefox.exe",
-            command: `SET EdgePath="C:/Program Files/Mozilla Firefox/firefox.exe"            
+            start: `SET EdgePath="C:/Program Files/Mozilla Firefox/firefox.exe"            
             start "" %EdgePath% --user-data-dir=C:/Temp/Supertemp/smth --kiosk --start-fullscreen --disable-features=Translate --app=http://${IPv4}:${ServerPort}/
             exit`,
-            shortCart: `Set objShell = WScript.CreateObject("WScript.Shell")
+            createLink: `Set objShell = WScript.CreateObject("WScript.Shell")
               Dim strUserProfile
               strUserProfile = objShell.ExpandEnvironmentStrings("%USERPROFILE%")
               Set lnk = objShell.CreateShortcut(strUserProfile & "/Desktop/Customer of display.LNK")              
@@ -199,7 +211,11 @@ async function StartBAT() {
               lnk.WorkingDirectory = "C:/Program Files/Mozilla Firefox"
               lnk.Save
               objShell.Run """" & strUserProfile & "/Desktop/Customer of display.LNK" & """", 1, False 
-              Set lnk = Nothing`,
+              Set lnk = Nothing
+              Set objShell = Nothing`,
+            alttab: `Set WshShell = WScript.CreateObject("WScript.Shell") 
+              WshShell.SendKeys "%{TAB}" 
+              Set WshShell = Nothing`,
           },
         ];
 
@@ -209,20 +225,26 @@ async function StartBAT() {
         ]);
 
         async function* getCommand() {
-          for (let { path, command, shortCart } of Browser) {
+          for (let { path, start, createLink, alttab } of Browser) {
             try {
               let Stats = await stat(path);
-              yield await Promise.resolve(Object.assign({}, { command: `${command}`, shortCart: `${shortCart}` }));
+              yield await Promise.resolve(
+                Object.assign({}, { start: `${start}`, createLink: `${createLink}`, alttab: `${alttab}` })
+              );
             } catch (e) {
               yield "no file";
             }
           }
         }
 
-        for await (let { command, shortCart } of getCommand()) {
-          if (!/no file/.test(command)) {
-            await fs.writeFile(path.join(__dirname, "start.bat"), command, cb);
-            await fs.writeFile(path.join(__dirname, "createLink.vbs"), shortCart, cb);
+        for await (let { start, createLink, alttab } of getCommand()) {
+          if (!/no file/.test(start)) {
+            console.log("start".yellow, start.blue);
+            console.log("createLink".yellow, createLink);
+            console.log("alttab".yellow, alttab);
+            await fs.writeFile(path.join(__dirname, "start.bat"), start, cb);
+            await fs.writeFile(path.join(__dirname, "createLink.vbs"), createLink, cb);
+            await fs.writeFile(path.join(__dirname, "alttab.vbs"), alttab, cb);
             return;
           }
         }
