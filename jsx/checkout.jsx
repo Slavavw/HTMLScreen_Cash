@@ -2,6 +2,7 @@ const React = require("react");
 const { getBYN, convertToNumeric } = require("../js/formatFunction.js");
 const ErrorBundle = require("./errorBundle.jsx");
 const AnimationCircle = require("./animationCircle.jsx");
+const CItcSlider = require("./ItcSlider.jsx");
 
 class Checkout extends React.Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class Checkout extends React.Component {
               el[1].dataRow.Active = true;
             }
             return el;
-          })
+          }),
         );
         return true;
       }
@@ -41,7 +42,7 @@ class Checkout extends React.Component {
               el[1].dataRow.Active = true;
             }
             return el;
-          })
+          }),
         );
         return true;
       }
@@ -51,7 +52,7 @@ class Checkout extends React.Component {
             el[1].dataRow.Active = false;
           }
           return el;
-        })
+        }),
       );
     }
     return false;
@@ -104,7 +105,7 @@ class Checkout extends React.Component {
   render() {
     let { cartItems } = this.state;
     cartItems = Array.from(cartItems.flat().filter((el, index) => index % 2));
-    let { columnName } = this.props.route || this.props;
+    let { columnName, reklama } = this.props.route || this.props;
     let { focus, error } = this.state;
     if (error === "") {
       this.TotalColumn = Object.assign({});
@@ -220,7 +221,7 @@ class Checkout extends React.Component {
                             dataRow={dataRow}
                             count={count}
                             createTotalColumn={this.createTotalColumn}></TTD>
-                        )
+                        ),
                       )}
                     </tr>
                   );
@@ -229,7 +230,9 @@ class Checkout extends React.Component {
             </table>
           </div>
         );
-      } else return null;
+      } else {
+        return <CItcSlider reklama={reklama}></CItcSlider>;
+      }
     } else {
       return (
         <ErrorBundle

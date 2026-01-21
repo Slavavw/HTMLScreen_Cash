@@ -9,7 +9,9 @@ require("@babel/register")({ presets: ["@babel/env", "@babel/react"] });
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 
-let { IntervalServer, ServerPort, currentBrowser } = require(path.join(__dirname, "serverinterval.json"));
+require("./server_folder/copyFolder.js");
+
+let { IntervalServer, ServerPort, currentBrowser } = require(path.join(__dirname, "source", "serverinterval.json"));
 
 const replaceReservedSymbol = (str) => {
   let regEx = /(?<space>[%\s])|(?<amp>&)|(?<lt><)|(?<gt>>)|(?<apos>')|(?<quote>")/g;
@@ -96,9 +98,9 @@ console.log(IPv4);
 
 let server = new http.Server();
 async function StartBAT() {
-  stat(path.join(__dirname, "serverinterval.json"))
+  stat(path.join(__dirname, "source", "serverinterval.json"))
     .then(() => {
-      ServerPort = require(path.join(__dirname, "serverinterval.json")).ServerPort;
+      ServerPort = require(path.join(__dirname, "source", "serverinterval.json")).ServerPort;
     })
     .catch(() => {
       ServerPort = 50001;
@@ -230,7 +232,7 @@ async function StartBAT() {
             try {
               let Stats = await stat(path);
               yield await Promise.resolve(
-                Object.assign({}, { start: `${start}`, createLink: `${createLink}`, alttab: `${alttab}` })
+                Object.assign({}, { start: `${start}`, createLink: `${createLink}`, alttab: `${alttab}` }),
               );
             } catch (e) {
               yield { start: "no file" };
@@ -243,9 +245,9 @@ async function StartBAT() {
             console.log("start".yellow, start);
             console.log("createLink".yellow, createLink);
             console.log("alttab".yellow, alttab);
-            await fs.writeFile(path.join(__dirname, "start.bat"), start, cb);
-            await fs.writeFile(path.join(__dirname, "createLink.vbs"), createLink, cb);
-            await fs.writeFile(path.join(__dirname, "alttab.vbs"), alttab, cb);
+            await fs.writeFile(path.join(__dirname, "cmd", "start.bat"), start, cb);
+            await fs.writeFile(path.join(__dirname, "cmd", "createLink.vbs"), createLink, cb);
+            await fs.writeFile(path.join(__dirname, "cmd", "alttab.vbs"), alttab, cb);
             return;
           }
         }
@@ -268,7 +270,7 @@ server.on("error", (e) => {
 (function () {
   Promise.race(
     outputDir.map((e) => start(path.join(__dirname, e), path.join(__dirname, "dist", e))),
-    StartBAT()
+    StartBAT(),
   );
 })();
 
@@ -299,7 +301,7 @@ async function readFileInDir(directSource, directOutput) {
         let output = fs.createReadStream(path.join(directSource, file));
         let input = fs.createWriteStream(
           path.join(directOutput, compose(file)(replaceReservedSymbol, replaceRushienLetter)),
-          "utf-8"
+          "utf-8",
         );
         output.pipe(input);
       } else {
@@ -332,8 +334,8 @@ const ErrorBundle = function (message) {
         style: { position: "absolute", left: 50, zIndex: "-10000" },
         speed: "1000 / 24",
       },
-      null
-    )
+      null,
+    ),
   );
 };
 
@@ -356,6 +358,7 @@ async function CreateOrderFolder(folder) {
 server.on("request", (request, response) => {
   let pathname = url.parse(request.url).pathname;
   let menu = require(path.join(__dirname, "source", "menu.json"));
+  let reklama = require(path.join(__dirname, "source", "reklama.json"));
   if (request.method === "GET") {
     let filePath = path.join(__dirname, compose(request.url)(replaceRushienLetter, replaceReservedSymbol));
     if (pathname === "/") {
@@ -374,7 +377,7 @@ server.on("request", (request, response) => {
           <script>
           ReactDOM.render(${ReactDOMServer.renderToString(ErrorBundle())},document.getElementById("content"));
           </script>          
-          </body>`
+          </body>`,
           );
         if (err.code === "ENOENT") {
           response.writeHead(404, { "content-type": "text/html; chatset=utf-8" });
@@ -395,7 +398,7 @@ server.on("request", (request, response) => {
           })
           .finally(() => {
             let interval;
-            stat(path.join(__dirname, "serverinterval.json"))
+            stat(path.join(__dirname, "source", "serverinterval.json"))
               .then((state) => {
                 interval = IntervalServer;
               })
@@ -407,7 +410,7 @@ server.on("request", (request, response) => {
                   .toString()
                   .replace(
                     /<body>/i,
-                    `<body>`.concat(styleBkground).concat(`<script> const interval = ${interval};</script>`)
+                    `<body>`.concat(styleBkground).concat(`<script> const interval = ${interval};</script>`),
                   );
                 console.log(result.bgMagenta);
                 response.write(result);
@@ -437,7 +440,7 @@ server.on("request", (request, response) => {
           if (stats.size) {
             let readStream = fs.createReadStream(
               path.join(__dirname, "source", "pre_order", "pre_order.json"),
-              "utf-8"
+              "utf-8",
             );
             response.writeHead(200, {
               "content-type": mime.getType(path.basename(filePath)),
@@ -459,6 +462,9 @@ server.on("request", (request, response) => {
       let arr = Object.values(menu[0])[0];
       console.log(arr);
       response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(arr));
+    } else if (/\/get_reklama/.test(pathname)) {
+      console.log("reklama".yellow, reklama.yellow);
+      response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(reklama));
     } else {
       console.log(filePath.red);
       fs.exists(filePath, (ext) => {

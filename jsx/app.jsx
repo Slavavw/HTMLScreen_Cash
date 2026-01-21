@@ -28,8 +28,8 @@ const ColumnStruct = (function () {
           arguments[1] === undefined
             ? [...ColumnStruct]
             : arguments[1] instanceof Array
-            ? [...arguments[1]]
-            : [...ColumnStruct];
+              ? [...arguments[1]]
+              : [...ColumnStruct];
         return columnToResult.filter((obj) => !obj[`${Object.keys(obj)[0]}`].disabled).map((el) => Object.keys(el)[0]);
       case "get":
         return ColumnsStruct;
@@ -38,8 +38,8 @@ const ColumnStruct = (function () {
           arguments[1] === undefined
             ? [...ColumnStruct]
             : arguments[1] instanceof Array
-            ? [...arguments[1]]
-            : [...ColumnsStruct];
+              ? [...arguments[1]]
+              : [...ColumnsStruct];
         let clmnName = arguments[1].split(",");
         return columnToResult.filter((obj) => {
           for (let [k, v] of Object.entries(obj)) {
@@ -69,6 +69,18 @@ const ColumnStruct = (function () {
           }
         };
       }
+      case "get_reklama":
+        return async function () {
+          let url;
+          url = location.origin + "/get_reklama";
+          try {
+            let data = await fetch(url);
+            data = await data.json();
+            return data;
+          } catch (e) {
+            return {};
+          }
+        };
     }
   };
 })();
@@ -120,7 +132,7 @@ async function getPreOrder() {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { columnName: null, updateParent: false };
+    this.state = { columnName: null, updateParent: false, reklama: {} };
     this.initStructureColumn = this.initStructureColumn.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
   }
@@ -128,8 +140,14 @@ class App extends React.Component {
   async initStructureColumn() {
     let columnName = await ColumnStruct("get_structure");
     columnName = await columnName();
+    let reklama = await ColumnStruct("get_reklama");
+    reklama = await reklama();
+    reklama = reklama.reduce(
+      (prev, cur, index) => Object.assign(prev, { [`${Object.keys(cur)[0]}`]: Object.values(cur)[0] }),
+      {},
+    );
     columnName = ColumnStruct("getVisible", ColumnStruct("exclude column", "Описание"));
-    this.setState({ columnName });
+    this.setState({ columnName, reklama });
   }
 
   componentDidMount() {
@@ -141,15 +159,19 @@ class App extends React.Component {
   }
 
   render() {
-    let { columnName } = this.state;
+    let { columnName, reklama } = this.state;
+    let style = cartItems.length ? {} : { background: "transparent" };
     return columnName ? (
-      <div className='well'>
+      <div
+        className='well'
+        style={{ ...style }}>
         <Checkout
           cartItems={getPreOrder}
           columnName={columnName}
           interval={interval}
           ColumnStruct={ColumnStruct}
           handleUpdate={this.handleUpdate}
+          reklama={reklama}
         />
       </div>
     ) : (
@@ -174,5 +196,5 @@ ReactDOM.render(
       path='/'
       component={App}></Route>
   </Router>,
-  document.getElementById("content")
+  document.getElementById("content"),
 );
