@@ -20,33 +20,34 @@ class CItcSlider extends React.Component {
   }
 
   componentDidMount() {
-    let { width, height } = findDOMNode(this.refs["slider-container"]).parentElement.getBoundingClientRect();
-    this.sliderWidth = width > 743 ? this.props.sliderWidth : width - 40;
-    let reklama = this.reklama;
-    let { loop, autoplay, interval, refresh, swipe } = this.props;
-    if (reklama.length) {
-      ItcSlider.getOrCreateInstance(findDOMNode(this.refs["itc-slider"]), {
-        autoplay,
-        interval,
-        loop,
-        refresh,
-        swipe,
-      });
-    } else {
-      document.querySelectorAll(".itc-slider-btn").forEach((item) => {
-        item.classList.add("itc-slider-btn-hide");
-      });
-    }
+    if (this.reklama.length) {
+      let { width, height } = findDOMNode(this.refs["slider-container"]).parentElement.getBoundingClientRect();
+      this.sliderWidth = width > 743 ? this.props.sliderWidth : width - 40;
+      let { loop, autoplay, interval, refresh, swipe } = this.props;
+      if (this.reklama.length) {
+        ItcSlider.getOrCreateInstance(findDOMNode(this.refs["itc-slider"]), {
+          autoplay,
+          interval,
+          loop,
+          refresh,
+          swipe,
+        });
+      } else {
+        document.querySelectorAll(".itc-slider-btn").forEach((item) => {
+          item.classList.add("itc-slider-btn-hide");
+        });
+      }
 
-    let el = findDOMNode(this.refs["itc-slider"]);
-    ItcSlider.getOrCreateInstance(el);
+      let el = findDOMNode(this.refs["itc-slider"]);
+      ItcSlider.getOrCreateInstance(el);
+    }
   }
 
   render() {
     let reklama = this.reklama,
       { sliderHeight } = this.props,
       sliderWidth = this.sliderWidth;
-    return (
+    return reklama.length ? (
       <div
         id='slider-container'
         ref='slider-container'
@@ -84,7 +85,7 @@ class CItcSlider extends React.Component {
           </div>
         </div>
       </div>
-    );
+    ) : null;
   }
 }
 

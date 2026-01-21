@@ -5,6 +5,9 @@ let fs = require("fs");
 const fs_promise = fs.promises;
 
 const folder = __dirname.replace(/\\server_folder/, "");
+
+console.log("folder".bgCyan, folder);
+
 const outputDir = ["css", "images"];
 const { compose, replaceReservedSymbol, replaceRushienLetter } = require("./correct_path.js");
 console.clear();
@@ -16,20 +19,24 @@ console.clear();
 
 async function start(direct, directOutput) {
   try {
+    console.log("direct источник".bgCyan, direct);
+    console.log("direct приемник".bgCyan, directOutput);
     await fs.exists(directOutput, async (exit) => {
       if (!exit) {
         fs.mkdir(directOutput, { recursive: true }, async (err) => {
           if (err) throw err;
-          console.log("-------create directory---------", directOutput);
+          console.log("-------create directory---------".bgCyan, directOutput);
           await readFileInDir(direct, directOutput);
         });
-      } else {
+      }
+      /*else {
         console.log(`удаляю каталог: ${directOutput}`.underline.bgYellow);
         let dirDeleted = await reamovecatalog(directOutput);
         console.log(`удалил каталог: ${dirDeleted}`.underline.bgGreen);
         await start(direct, dirDeleted);
         console.log("должен создать каталог:", dirDeleted);
       }
+        */
     });
   } catch (e) {
     console.log(e);
