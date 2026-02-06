@@ -12,7 +12,7 @@ class Checkout extends React.Component {
     this.TotalColumn = {};
     this.numberInterval = null;
     this.checkForUpdate = this.checkForUpdate.bind(this);
-    this.state = { error: "", cartItems: [], focus: false };
+    this.state = { error: "", cartItems: [], cartHeader: [], focus: false };
   }
 
   componentWillMount() {
@@ -66,7 +66,8 @@ class Checkout extends React.Component {
         this.checkForUpdate(newCartItems, this.state.cartItems) ||
         this.checkForUpdate(this.state.cartItems, newCartItems)
       ) {
-        this.setState({ cartItems: newCartItems }, () => handleUpdate());
+        let cartHeader = await cartItems("headerpre_order");
+        this.setState({ cartItems: newCartItems, cartHeader }, () => handleUpdate());
       }
     } else {
       this.setState({ cartItems: [] }, () => handleUpdate());
@@ -103,7 +104,7 @@ class Checkout extends React.Component {
   }
 
   render() {
-    let { cartItems } = this.state;
+    let { cartItems, cartHeader } = this.state;
     cartItems = Array.from(cartItems.flat().filter((el, index) => index % 2));
     let { columnName, reklama } = this.props.route || this.props;
     let { focus, error } = this.state;
@@ -122,7 +123,10 @@ class Checkout extends React.Component {
         });
         return (
           <div>
-            <TBasketSale_itogo TotalColumn={this.TotalColumn}></TBasketSale_itogo>
+            <TBasketSale_itogo
+              TotalColumn={this.TotalColumn}
+              cartHeader={cartHeader}
+            />
             <table
               className='table table-bordered'
               ref={"table table-bordered"}
@@ -213,7 +217,11 @@ class Checkout extends React.Component {
                       }}>
                       {columnName.map((title, i) =>
                         /количество/i.test(title) ? (
-                          <td style={{ textAlign: "center", verticalAlign: "middle" }}>{count}</td>
+                          <td
+                            style={{ textAlign: "center", verticalAlign: "middle" }}
+                            key={i}>
+                            {count}
+                          </td>
                         ) : (
                           <TTD
                             key={i}
@@ -319,12 +327,56 @@ class TBasketSale_itogo extends React.Component {
   }
 
   render() {
+    let { cartHeader } = this.props;
+    let noDisplayHearder = cartHeader.reduce(
+        (prev, cur) => (/nodisplay\d/.test(Object.keys(cur)[0]) ? [...prev, Object.values(cur)[0]] : [...prev]),
+        [],
+      ),
+      DisplayHearder = cartHeader.filter((el) => !/nodisplay\d/.test(Object.keys(el)[0]));
     return (
       <div
         className='BasketSale_itogo'
         ref='BasketSale_itogo'
-        style={{ marginTop: "30px", marginBottom: "30px", color: "red", fontWeight: "bold" }}>
+        style={{ color: "red", fontWeight: "bold" }}>
         <span>{this.message}</span>
+        <div
+          className='wrapper_header'
+          style={{ display: "flex", flexFlow: "column nowrap", float: "right" }}>
+          <div
+            className='noDisplayHearder'
+            style={{ display: "flex", flexFlow: "row nowrap" }}>
+            {noDisplayHearder.map((el, i) => (
+              <div
+                className='element_noDisplayHearder'
+                key={i}>
+                {el}
+              </div>
+            ))}
+          </div>
+          <div
+            className='DisplayHearder'
+            style={{ display: "flex", flexFlow: "row nowrap", gap: "10px" }}>
+            {DisplayHearder.map((el, i) => {
+              let header = Object.keys(el)[0],
+                value = Object.values(el)[0];
+              return (
+                <div
+                  className='element_DisplayHearder'
+                  style={{
+                    display: "flex",
+                    flexFlow: "column nowrap",
+                    borderRadius: "5px",
+                    padding: "10px 10px 0 10px",
+                    backgroundColor: "rgba(0, 0, 0, .1)",
+                    textAlign: "center",
+                  }}>
+                  <nav>{header}</nav>
+                  <nav>{value}</nav>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     );
   }

@@ -430,8 +430,9 @@ server.on("request", (request, response) => {
         response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify(res));
       });
-    } else if (pathname === "/pre_order") {
-      fs.stat(path.join(__dirname, "source", "pre_order", "pre_order.json"), (err, stats) => {
+    } else if (/\/(pre_order|headerpre_order)/.test(pathname)) {
+      let { source } = /\/(?<source>.+)/.exec(pathname).groups;
+      fs.stat(path.join(__dirname, "source", "pre_order", `${source}.json`), (err, stats) => {
         if (err) {
           response.writeHead(400, { "content-type": "application/text; chatset=utf-8" });
           response.end("empty");
@@ -439,7 +440,7 @@ server.on("request", (request, response) => {
           console.log("size".bgYellow, stats.size);
           if (stats.size) {
             let readStream = fs.createReadStream(
-              path.join(__dirname, "source", "pre_order", "pre_order.json"),
+              path.join(__dirname, "source", "pre_order", `${source}.json`),
               "utf-8",
             );
             response.writeHead(200, {
@@ -485,43 +486,6 @@ server.on("request", (request, response) => {
           response.end();
         }
       });
-    }
-  }
-  //POST
-  else {
-    var dataBuffer = [];
-    if (pathname === "/order") {
-      request
-        .on("data", (chunk) => {
-          dataBuffer = dataBuffer.concat(...chunk);
-        })
-        .on("end", () => {
-          let filename = String(Date.now()).slice(-7);
-          console.log(filename.america);
-          CreateOrderFolder(path.join(__dirname, "order"))
-            .then((res) => {
-              console.log("создан каталог");
-              //! запишем заказ в файл и сохраним в каталог  order
-              let stream = fs.createWriteStream(path.join(__dirname, "order", `${filename}.json`), "utf-8");
-              stream.end(Buffer.from(dataBuffer).toString(), "utf-8", () => {
-                console.log("записан в файл", Buffer.from(dataBuffer).toString().america);
-                response.writeHead(200, { "content-type": "application/json" });
-                let resp = Object.assign({}, { check: `${filename}` });
-                console.log(JSON.stringify(resp).bgRed);
-                response.end(JSON.stringify(resp));
-              });
-            })
-            .catch((err) => {
-              response.writeHead(404, { "content-type": "text/html; chatset=utf-8" });
-              response.end(ReactDOMServer.renderToString(ErrorBundle("ошибка создания каталога заказов")));
-            });
-        })
-        .on("error", () => {
-          let message = 'message={"ошибка передачи заказа, попробуйте еще"}';
-          let result = ReactDOMServer.renderToString(ErrorBundle(`${message}`));
-          response.writeHead(404, { "content-type": "text/html; chatset=utf-8" });
-          response.end(result);
-        });
     }
   }
 });
