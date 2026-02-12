@@ -9,8 +9,6 @@ require("@babel/register")({ presets: ["@babel/env", "@babel/react"] });
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 
-require("./server_folder/copyFolder.js");
-
 let { IntervalServer, ServerPort, currentBrowser } = require(path.join(__dirname, "source", "serverinterval.json"));
 
 const replaceReservedSymbol = (str) => {
@@ -65,7 +63,6 @@ const replaceRushienLetter = (arg) =>
 //*********************todo перезаписали в папку dist файлы с папок audio, image, css, audio**************************
 const fs_promise = fs.promises;
 
-const outputDir = [];
 console.clear();
 
 async function start(direct, directOutput) {
@@ -269,7 +266,7 @@ server.on("error", (e) => {
 
 (function () {
   Promise.race(
-    outputDir.map((e) => start(path.join(__dirname, e), path.join(__dirname, "dist", e))),
+    ["images"].map((e) => start(path.join(__dirname, e), path.join(__dirname, "dist", e))),
     StartBAT(),
   );
 })();
