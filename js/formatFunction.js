@@ -24,14 +24,27 @@ let getBYN = (type, ...val) => {
           return prev / cur;
         case "*":
           return prev * cur;
+        default:
+          return prev;
       }
     });
+
+  res;
+
   let cop = /(?<RUB>\d*)(\.|\,)?(?<KOP>\d{0,10})/i.exec(res);
   if (cop === null) {
-    return { RUM: 0, KOP: 0 };
+    return { RUM: "0", KOP: "00" };
   }
   let { RUB, KOP } = cop.groups;
-  return { RUB, KOP: Math.abs(KOP.slice(0, 2)) + Math.abs(Math.round(KOP.slice(2, 8) / 10 ** KOP.slice(2, 8).length)) };
+  KOP = KOP.concat("0");
+  KOP = Math.abs(KOP.slice(0, 2)) + Math.abs(Math.round(KOP.slice(2, 8) / 10 ** KOP.slice(2, 8).length));
+  KOP =
+    String(KOP / 100).split(".").length === 1
+      ? "00"
+      : String(KOP / 100)
+          .split(".")[1]
+          .concat(String(KOP / 100).split(".")[1].length === 1 ? "0" : "");
+  return { RUB, KOP };
 };
 
 const regExpClient = /(?<table>\d+)_(?<phone>\+(\d|\s)+)[\s|_]*?_(?<user>[A-Z,А-Я,0-9]+)[\s|_]*(?<htmlOrder>\d+)*/i;

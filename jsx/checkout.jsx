@@ -93,9 +93,9 @@ class Checkout extends React.Component {
     this.numberInterval = window.setInterval(this.senderRequest, interval);
   }
 
-  createTotalColumn(key, value) {
+  createTotalColumn = (key, value) => {
     this.TotalColumn[key] = value * 1 + (this.TotalColumn[key] === undefined ? 0 : this.TotalColumn[key]) * 1;
-  }
+  };
 
   componentWillUnmount() {
     if (this.numberInterval) {
