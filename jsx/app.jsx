@@ -101,25 +101,27 @@ async function getPreOrder(hash = "pre_order") {
       console.log("data", typeof data, data);
       if (Object.keys(data).length) {
         if (/^pre_order/.test(hash)) {
-          data = Object.entries(data).sort((x, y) => y[1].dataRow.Active - x[1].dataRow.Active);
-          data = data.reduce((prev, cur) => {
-            let o = {};
-            if (!cartItems.filter((el) => el[0] === cur[0]).length) {
-              cur[1].dataRow.Active = true;
-              o[`${cur[0]}`] = cur[1];
-              return Object.assign(prev, o);
-            }
-            if (cartItems.filter((el) => el[0] === cur[0])[0][1].count !== cur[1].count) {
-              cur[1].dataRow.Active = true;
-              o[`${cur[0]}`] = cur[1];
-              return Object.assign(prev, o);
-            }
-            cur[1].dataRow.Active = false;
-            o[`${cur[0]}`] = cur[1];
-            return Object.assign(prev, o);
-          }, {});
-          data = Object.entries(data).sort((x, y) => y[1].dataRow.Active - x[1].dataRow.Active);
-          cartItems = Array.from(data);
+          //  data = Object.entries(data).sort((x, y) => y[1].dataRow.Active - x[1].dataRow.Active);
+          let arr = Array.from(
+            Object.entries(data).reduce((prev, cur) =>
+              prev[0] < cur[0] ? Array.of(...cur, ...prev) : Array.of(...prev, ...cur),
+            ),
+          );
+          arr = arr
+            .reduce(
+              (prev, cur, index) => (index % 2 ? Array.of(...prev, [arr[index - 1], cur]) : Array.of(...prev)),
+              [],
+            )
+            .map((cur) => {
+              let length = cartItems.filter((prev) => prev[0] === cur[0] && prev[1].count !== cur[1].count).length;
+              if (length > 0) {
+                cur[1].dataRow.Active = length;
+              }
+              cur[1].dataRow.Active = length;
+              return cur;
+            })
+            .reduce((prev, cur) => (cur[1].dataRow.Active ? [cur, ...prev] : [...prev, cur]), []);
+          cartItems = Array.from(arr);
         } else {
           return Object.entries(data).map((el) => {
             let o = {};
