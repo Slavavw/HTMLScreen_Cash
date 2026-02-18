@@ -265,8 +265,13 @@ server.on("error", (e) => {
 });
 
 (function () {
-  Promise.race(
+  /* Promise.race(
     ["images"].map((e) => start(path.join(__dirname, e), path.join(__dirname, "dist", e))),
+    StartBAT(),
+  );
+  */
+  Promise.race(
+    [].map((e) => start(path.join(__dirname, e), path.join(__dirname, "dist", e))),
     StartBAT(),
   );
 })();
