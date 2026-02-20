@@ -54,14 +54,11 @@ const ColumnStruct = (function () {
           try {
             let data = await fetch(url);
             data = await data.json();
-            if (data.length) {
-              ColumnStruct("clear");
-              let o = Array.from(Object.entries(Array.of(Object.entries(data)).flat()[0][1])).flat()[1][0];
-              for (let [k, v] of Object.entries(o)) {
-                let obj = {};
-                obj[`${k}`] = v;
-                ColumnStruct("add", obj);
-              }
+            ColumnStruct("clear");
+            for (let [k, v] of Object.entries(data)) {
+              let obj = {};
+              obj[`${k}`] = v;
+              ColumnStruct("add", obj);
             }
             return ColumnStruct("get");
           } catch (e) {

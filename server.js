@@ -462,7 +462,7 @@ server.on("request", (request, response) => {
         }
       });
     } else if (/\/get_structure/.test(pathname)) {
-      let arr = Object.values(menu[0])[0];
+      let arr = menu;
       console.log(arr);
       response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(arr));
     } else if (/\/get_reklama/.test(pathname)) {
