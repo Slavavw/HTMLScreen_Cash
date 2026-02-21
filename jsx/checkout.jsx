@@ -113,13 +113,15 @@ class Checkout extends React.Component {
       if (cartItems.length) {
         cartItems.map((item, index) => {
           let { dataRow, count } = item;
-          columnName.map((title, i) => {
-            if (Object.hasOwn(dataRow, title)) {
-              if (/сумма со скидкой/is.exec(title) !== null) {
-                this.createTotalColumn(`Итого по чеку `, convertToNumeric(dataRow[`${title}`]));
+          columnName
+            .map((el) => Object.keys(el)[0])
+            .map((title, i) => {
+              if (Object.hasOwn(dataRow, title)) {
+                if (/сумма со скидкой/is.exec(title) !== null) {
+                  this.createTotalColumn(`Итого по чеку `, convertToNumeric(dataRow[`${title}`]));
+                }
               }
-            }
-          });
+            });
         });
         return (
           <div>
@@ -132,57 +134,61 @@ class Checkout extends React.Component {
               ref={"table table-bordered"}
               style={{ background: "rgba(125,125,125,.8)" }}>
               <colgroup>
-                {columnName.map((title, i) => {
-                  if (/\.?изделие|продукт\.?|\.?цена|стоимость|сумма\.?/is.exec(title) !== null)
-                    return (
-                      <col
-                        id={title}
-                        key={i}
-                      />
-                    );
-                  else if (/PHOTO|src/i.exec(title))
-                    return (
-                      <col
-                        id={title}
-                        key={i}
-                      />
-                    );
-                  else return null;
-                })}
+                {columnName
+                  .map((el) => Object.keys(el)[0])
+                  .map((title, i) => {
+                    if (/\.?изделие|продукт\.?|\.?цена|стоимость|сумма\.?/is.exec(title) !== null)
+                      return (
+                        <col
+                          id={title}
+                          key={i}
+                        />
+                      );
+                    else if (/PHOTO|src/i.exec(title))
+                      return (
+                        <col
+                          id={title}
+                          key={i}
+                        />
+                      );
+                    else return null;
+                  })}
               </colgroup>
               <tbody>
                 <tr>
-                  {columnName.map((title, i) => {
-                    title = /PHOTO|src/i.exec(title) ? "" : title;
-                    if (/изделие/i.test(title)) {
+                  {columnName
+                    .map((el) => Object.keys(el)[0])
+                    .map((title, i) => {
+                      title = /PHOTO|src/i.exec(title) ? "" : title;
+                      if (/изделие/i.test(title)) {
+                        return (
+                          <th
+                            scope='col'
+                            key={i}
+                            style={{ verticalAlign: "middle" }}>
+                            {title}
+                          </th>
+                        );
+                      }
+                      if (/количество/i.test(title)) {
+                        return (
+                          <th
+                            scope='col'
+                            key={columnName.length + 100}
+                            style={{ textAlign: "center", verticalAlign: "middle" }}>
+                            количество
+                          </th>
+                        );
+                      }
                       return (
                         <th
                           scope='col'
                           key={i}
-                          style={{ verticalAlign: "middle" }}>
+                          style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {title}
                         </th>
                       );
-                    }
-                    if (/количество/i.test(title)) {
-                      return (
-                        <th
-                          scope='col'
-                          key={columnName.length + 100}
-                          style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          количество
-                        </th>
-                      );
-                    }
-                    return (
-                      <th
-                        scope='col'
-                        key={i}
-                        style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {title}
-                      </th>
-                    );
-                  })}
+                    })}
                 </tr>
                 {cartItems.map((item, index) => {
                   let { dataRow, count } = item;
@@ -215,22 +221,29 @@ class Checkout extends React.Component {
                         boxShadow: "0 0 2px white",
                         ...style,
                       }}>
-                      {columnName.map((title, i) =>
-                        /количество/i.test(title) ? (
-                          <td
-                            style={{ textAlign: "center", verticalAlign: "middle" }}
-                            key={i}>
-                            {count}
-                          </td>
-                        ) : (
-                          <TTD
-                            key={i}
-                            title={title}
-                            dataRow={dataRow}
-                            count={count}
-                            createTotalColumn={this.createTotalColumn}></TTD>
-                        ),
-                      )}
+                      {columnName
+                        .map((el) => Object.keys(el)[0])
+                        .map((title, i) => {
+                          let { font, color, rowsBkground } = columnName.filter(
+                            (el) => Object.keys(el)[0] === title,
+                          )[0][`${title}`];
+                          let addStyle = { font, color, backgroundColor: rowsBkground };
+                          return /количество/i.test(title) ? (
+                            <td
+                              style={{ textAlign: "center", verticalAlign: "middle", ...addStyle }}
+                              key={i}>
+                              {count}
+                            </td>
+                          ) : (
+                            <TTD
+                              key={i}
+                              title={title}
+                              dataRow={dataRow}
+                              count={count}
+                              addStyle={addStyle}
+                              createTotalColumn={this.createTotalColumn}></TTD>
+                          );
+                        })}
                     </tr>
                   );
                 })}
@@ -265,7 +278,7 @@ class TTD extends React.Component {
   }
 
   render() {
-    let { dataRow, count, title, createTotalColumn } = this.props;
+    let { dataRow, count, title, createTotalColumn, addStyle } = this.props;
     let data = dataRow[title];
     if (Object.hasOwn(dataRow, title)) {
       if (/сумма со скидкой/is.exec(title) !== null) {
@@ -291,7 +304,7 @@ class TTD extends React.Component {
         return (
           <td
             ref='parent'
-            style={{ verticalAlign: "middle" }}>
+            style={{ verticalAlign: "middle", ...addStyle }}>
             {dataRow[`${title}`]}
           </td>
         );
@@ -299,7 +312,7 @@ class TTD extends React.Component {
         return (
           <td
             ref='parent'
-            style={{ textAlign: "center", verticalAlign: "middle" }}>
+            style={{ textAlign: "center", verticalAlign: "middle", ...addStyle }}>
             {dataRow[`${title}`]}
           </td>
         );

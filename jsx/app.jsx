@@ -30,7 +30,8 @@ const ColumnStruct = (function () {
             : arguments[1] instanceof Array
               ? [...arguments[1]]
               : [...ColumnStruct];
-        return columnToResult.filter((obj) => !obj[`${Object.keys(obj)[0]}`].disabled).map((el) => Object.keys(el)[0]);
+        // return columnToResult.filter((obj) => !obj[`${Object.keys(obj)[0]}`].disabled).map((el) => Object.keys(el)[0]);
+        return columnToResult.filter((obj) => !obj[`${Object.keys(obj)[0]}`].disabled);
       case "get":
         return ColumnsStruct;
       case "exclude column":
