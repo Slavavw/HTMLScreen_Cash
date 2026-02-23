@@ -159,13 +159,24 @@ class Checkout extends React.Component {
                   {columnName
                     .map((el) => Object.keys(el)[0])
                     .map((title, i) => {
+                      let { font, color, textDecoration, fontWeight, fontStyle, rowsBkground } = columnName.filter(
+                        (el) => Object.keys(el)[0] === title,
+                      )[0][`${title}`].HeaderStyle;
+                      let addStyle = {
+                        font,
+                        color,
+                        textDecoration,
+                        fontWeight,
+                        fontStyle,
+                        backgroundColor: rowsBkground,
+                      };
                       title = /PHOTO|src/i.exec(title) ? "" : title;
                       if (/изделие/i.test(title)) {
                         return (
                           <th
                             scope='col'
                             key={i}
-                            style={{ verticalAlign: "middle" }}>
+                            style={{ verticalAlign: "middle", ...addStyle }}>
                             {title}
                           </th>
                         );
@@ -175,7 +186,7 @@ class Checkout extends React.Component {
                           <th
                             scope='col'
                             key={columnName.length + 100}
-                            style={{ textAlign: "center", verticalAlign: "middle" }}>
+                            style={{ textAlign: "center", verticalAlign: "middle", ...addStyle }}>
                             количество
                           </th>
                         );
@@ -184,7 +195,7 @@ class Checkout extends React.Component {
                         <th
                           scope='col'
                           key={i}
-                          style={{ textAlign: "center", verticalAlign: "middle" }}>
+                          style={{ textAlign: "center", verticalAlign: "middle", ...addStyle }}>
                           {title}
                         </th>
                       );
@@ -192,23 +203,7 @@ class Checkout extends React.Component {
                 </tr>
                 {cartItems.map((item, index) => {
                   let { dataRow, count } = item;
-                  let style =
-                    dataRow["Active"] && focus
-                      ? {
-                          color: "#ffffff",
-                          background: "linear-gradient(rgb(39 161 41 / 77%) 40%, rgb(90 203 62 / 50%))",
-                          boxShadow: "inset 4px 4px rgba(10,10,10,.1)",
-                          boxShadow: "rgba(10, 10, 10, 0.1) 4px 4px inset",
-                          transform: "scale(1.01)",
-                          fontSize: "1.2em",
-                          fontWeight: "bold",
-                        }
-                      : {
-                          transitionProperty: "background, boxShadow, fontSize",
-                          transitionDuration: ".5s",
-                          background: "rgb(0,102,153)",
-                          boxShadow: "0 0 2px white",
-                        };
+                  let style = dataRow["Active"] && focus ? {} : {};
                   return (
                     <tr
                       key={index}
@@ -224,10 +219,31 @@ class Checkout extends React.Component {
                       {columnName
                         .map((el) => Object.keys(el)[0])
                         .map((title, i) => {
-                          let { font, color, rowsBkground } = columnName.filter(
+                          let { font, color, textDecoration, fontWeight, fontStyle, rowsBkground } = columnName.filter(
                             (el) => Object.keys(el)[0] === title,
                           )[0][`${title}`];
-                          let addStyle = { font, color, backgroundColor: rowsBkground };
+                          let addStyle = !(dataRow["Active"] && focus)
+                            ? {
+                                transitionProperty: "background, boxShadow, fontSize",
+                                transitionDuration: ".5s",
+                                background: "rgb(0,102,153)",
+                                boxShadow: "0 0 2px white",
+                                font,
+                                color,
+                                textDecoration,
+                                fontWeight,
+                                fontStyle,
+                                backgroundColor: rowsBkground,
+                              }
+                            : {
+                                color: "#ffffff",
+                                background: "linear-gradient(rgb(39 161 41 / 77%) 40%, rgb(90 203 62 / 50%))",
+                                boxShadow: "inset 4px 4px rgba(10,10,10,.1)",
+                                boxShadow: "rgba(10, 10, 10, 0.1) 4px 4px inset",
+                                transform: "scale(1.01)",
+                                fontSize: "1.2em",
+                                fontWeight: "bold",
+                              };
                           return /количество/i.test(title) ? (
                             <td
                               style={{ textAlign: "center", verticalAlign: "middle", ...addStyle }}
