@@ -106,7 +106,7 @@ class Checkout extends React.Component {
   render() {
     let { cartItems, cartHeader } = this.state;
     cartItems = Array.from(cartItems.flat().filter((el, index) => index % 2));
-    let { columnName, reklama } = this.props.route || this.props;
+    let { columnName, reklama, basketSale_itog_style } = this.props.route || this.props;
     let { focus, error } = this.state;
     if (error === "") {
       this.TotalColumn = Object.assign({});
@@ -128,6 +128,7 @@ class Checkout extends React.Component {
             <TBasketSale_itogo
               TotalColumn={this.TotalColumn}
               cartHeader={cartHeader}
+              basketSale_itog_style={basketSale_itog_style}
             />
             <table
               className='table table-bordered'
@@ -356,7 +357,7 @@ class TBasketSale_itogo extends React.Component {
   }
 
   render() {
-    let { cartHeader } = this.props;
+    let { cartHeader, basketSale_itog_style } = this.props;
     let noDisplayHearder = cartHeader.reduce(
         (prev, cur) => (/nodisplay\d/.test(Object.keys(cur)[0]) ? [...prev, Object.values(cur)[0]] : [...prev]),
         [],
@@ -366,7 +367,7 @@ class TBasketSale_itogo extends React.Component {
       <div
         className='BasketSale_itogo'
         ref='BasketSale_itogo'
-        style={{ color: "red", fontWeight: "bold" }}>
+        style={{ color: "red", fontWeight: "bold", ...basketSale_itog_style }}>
         <span>{this.message}</span>
         <div
           className='wrapper_header'

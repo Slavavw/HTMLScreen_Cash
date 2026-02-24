@@ -360,6 +360,8 @@ async function CreateOrderFolder(folder) {
 server.on("request", (request, response) => {
   let pathname = url.parse(request.url).pathname;
   let menu = require(path.join(__dirname, "source", "menu.json"));
+  let basketSale_itog_style = require(path.join(__dirname, "source", "basketSale_itog_style.json"));
+
   let reklama = require(path.join(__dirname, "source", "reklama.json"));
   if (request.method === "GET") {
     let filePath = path.join(__dirname, compose(request.url)(replaceRushienLetter, replaceReservedSymbol));
@@ -468,6 +470,9 @@ server.on("request", (request, response) => {
     } else if (/\/get_reklama/.test(pathname)) {
       console.log("reklama".yellow, reklama.yellow);
       response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(reklama));
+    } else if (/\/get_basketSale_itog_style/.test(pathname)) {
+      console.log("basketSale_itog_style".yellow, basketSale_itog_style.yellow);
+      response.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(basketSale_itog_style));
     } else {
       console.log(filePath.red);
       fs.exists(filePath, (ext) => {

@@ -79,6 +79,18 @@ const ColumnStruct = (function () {
             return {};
           }
         };
+      case "get_basketSale_itog_style":
+        return async function () {
+          let url;
+          url = location.origin + "/get_basketSale_itog_style";
+          try {
+            let data = await fetch(url);
+            data = await data.json();
+            return data;
+          } catch (e) {
+            return {};
+          }
+        };
     }
   };
 })();
@@ -141,7 +153,7 @@ async function getPreOrder(hash = "pre_order") {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { columnName: null, updateParent: false, reklama: {} };
+    this.state = { columnName: null, updateParent: false, reklama: {}, basketSale_itog_style: {} };
     this.initStructureColumn = this.initStructureColumn.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
   }
@@ -156,7 +168,9 @@ class App extends React.Component {
       {},
     );
     columnName = ColumnStruct("getVisible", ColumnStruct("exclude column", "Описание"));
-    this.setState({ columnName, reklama });
+    let basketSale_itog_style = await ColumnStruct("get_basketSale_itog_style");
+    basketSale_itog_style = await basketSale_itog_style();
+    this.setState({ columnName, reklama, basketSale_itog_style });
   }
 
   componentDidMount() {
@@ -168,7 +182,7 @@ class App extends React.Component {
   }
 
   render() {
-    let { columnName, reklama } = this.state;
+    let { columnName, reklama, basketSale_itog_style } = this.state;
     let style = cartItems.length ? {} : { background: "transparent" };
     return columnName ? (
       <div
@@ -181,6 +195,7 @@ class App extends React.Component {
           ColumnStruct={ColumnStruct}
           handleUpdate={this.handleUpdate}
           reklama={reklama}
+          basketSale_itog_style={basketSale_itog_style}
         />
       </div>
     ) : (
